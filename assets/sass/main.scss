@@ -1,0 +1,12 @@
+/** Boilerplate Stylesheet entrypoint **/
+
+// Include proprietary framework
+@import 'base/variables'; // Variables are loaded first to be used across other partials/sass files
+
+@import 'base/framework';
+@import 'base/mobile';
+
+// Include Seperate components
+@import 'components/nav';
+@import 'components/footer';
+@import 'components/animations';
