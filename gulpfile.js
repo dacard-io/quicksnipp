@@ -56,7 +56,7 @@ gulp.task('build', ['clean'], function() {
 
 // Styles task
 gulp.task('styles', function() {
-  return gulp.src(['assets/sass/**/*.scss'])
+  return gulp.src(['assets/sass/main.scss'])
     .pipe(plumber({errorHandler: onError}))
     .pipe(sass())
     .pipe(autoprefixer(AUTOPREFIXER_BROWSERS))

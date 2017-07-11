@@ -1,12 +1,23 @@
 /** Boilerplate Stylesheet entrypoint **/
 
-// Include proprietary framework
-@import 'base/variables'; // Variables are loaded first to be used across other partials/sass files
+// Include abstracts (variables, helpers, mixins, etc.)
+@import 'abstracts/variables';
 
-@import 'base/framework';
-@import 'base/mobile';
+// Import base
+@import 'base/typography';
 
-// Include Seperate components
-@import 'components/nav';
-@import 'components/footer';
-@import 'components/animations';
+// Import components
+@import 'components/buttons';
+
+// Import layout
+@import 'layout/navigation';
+@import 'layout/footer';
+
+// Import pages
+@import 'pages/home';
+
+// Import themes
+@import 'themes/darktheme';
+
+// Import vendor
+@import 'vendor/photonkit/photon';
