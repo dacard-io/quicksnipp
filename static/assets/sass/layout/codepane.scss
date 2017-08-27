@@ -11,5 +11,11 @@
 
 	pre {
 	    border: 1px solid #dddddd;
+
+	    &.code-toolbar > .toolbar {
+	    	background: transparent !important;
+	    	top: 0;
+	    }
 	}
+
 }
