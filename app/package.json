@@ -7,7 +7,11 @@
     "react-dom": "^15.6.1",
     "react-scripts": "0.9.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "axios": "^0.16.2",
+    "jquery-ui": "^1.12.1",
+    "sweetalert2": "^6.6.9"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
