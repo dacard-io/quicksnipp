@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import swal from 'sweetalert2'
+//import swal from 'sweetalert2'
 
 class App extends Component {
   render() {

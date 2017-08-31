@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import Groups from './Groups';
-import swal from 'sweetalert2'
+//import swal from 'sweetalert2'
 
 ReactDOM.render(
   <App />,

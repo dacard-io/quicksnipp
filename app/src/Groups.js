@@ -15,9 +15,6 @@ class Groups extends Component {
 			current_group: '',
 			loaded: false
 		};
-
-		// Bind addGroup function to the context of this component
-		this.addGroup = this.addGroup.bind(this);
 	}
 
 	addGroup() {
@@ -25,7 +22,7 @@ class Groups extends Component {
 		swal({
 		  title: 'Add a Group',
 		  html:
-		    '<input id="input-grouptitle" class="swal2-input" placeholder="Name of Group">' +
+		    '<input id="input-grouptitle" class="swal2-input" placeholder="Name of Group" required>' +
 		    '<input id="input-groupcolor" class="swal2-input" placeholder="Group Color (CSS colors please)">',
 		  preConfirm: function () {
 		    return new Promise(function (resolve) {
@@ -40,7 +37,7 @@ class Groups extends Component {
 		  onOpen: function () {
 		    //$('#swal-input1').focus()
 		  }
-		}).then(function (result) {
+		}).then((result) => {
 		  	// Submit POST to create new group
 		  	var api = 'http://localhost:8000/groups/';
 			var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
@@ -49,14 +46,13 @@ class Groups extends Component {
 		    	'title': result[0],
 				'label_color': result[1],
 				'snippets': []
-		  	}, {headers: authOptions}).then(function (response) {
+		  	}, {headers: authOptions}).then(() => {
 			    swal(
 				  'Group Created',
 				  '',
 				  'success'
-				);
-				// Set the state of the component to be unloaded
-				//this.state.loaded = false;
+				)
+				this.fetchGroups(); // This got it working!
 		  	}).catch(function (error) {
 			    console.log(error);
 			    swal(
@@ -65,79 +61,102 @@ class Groups extends Component {
 				  'error'
 				)
 		  	});
-			/*
-			axios.post(api, {headers: authOptions})
-				.then(res => {
-					title: result[0],
-					label_color: result[1]
-				}).catch(function(error){
-					console.log(error);
-					swal(
-					  'Oops...',
-					  'Could not save group. Error: ' + error,
-					  'error'
-					)
-				})
-			*/
-		}).catch(swal.noop)
+		}).catch(() => swal.noop)
 	}
 
 	// I typically put my functions before state management
+	
+	// This function should only run on mount!
 	fetchGroups() {
-		this.setState({ loaded: false }); // Set component to be loading
+		console.log("fetchGroups() function starting");
 		var api = 'http://localhost:8000/groups/';
 		var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
 		var authOptions = { 'Authorization': 'Token ' + token }
 		axios.get(api, {headers: authOptions})
 			.then(res => {
-				console.log("Res: ", res)
-				var groups_res = res.data.map(function(obj, index){
-					// States are immutable, so set a new array
-					var newGroupsArray = this.state.groups.slice(); 
-		        	newGroupsArray.push(obj);
-		        	this.setState({ groups: newGroupsArray });
-				}, this); // Map recieved groups data to the groups state
-				/* Important! the second argument in the map "this" keeps the context of the component */
+				console.log("Groups fetched!")
+				this.setState({ groups: res.data });
 				this.setState({ loaded: true });
-				this.render();
-			}).catch(function(error){
+				//this.render();
+			}).catch((error) => {
 				console.log(error);
-			})
+			});
 	}
 
 	// Handle click events on groups
 	handleClick(group) {
 		console.log("Selected group: ", group)
+		this.render();
+	}
+
+	// Handle addgroup events - Having problem with function with using fetchGroups(). It was silently swallowing errors, so I created a handler instead
+	// Handle click events on groups
+	handleAddGroup() {
+		this.fetchGroups();
+		this.addGroup();
+		//this.fetchGroups();
+		
+		console.log("AddGroup handler ran")
+	}
+
+	// Handle click events on groups
+	handleEdit(group) {
+		console.log("Edit group: ", group)
+		swal(
+		  'Group Edited',
+		  '',
+		  'success'
+		);
+	}
+	// Handle click events on groups
+	handleDelete(group) {
+		console.log("Delete group: ", group)
+		var api = 'http://localhost:8000/group/' + group.id;
+		var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+		var authOptions = { 'Authorization': 'Token ' + token }
+		axios.delete(api, {headers: authOptions}).then(() => {
+		    swal(
+			  'Group Deleted',
+			  '',
+			  'success'
+			)
+			this.fetchGroups(); // This got it working!
+	  	}).catch(function (error) {
+		    console.log(error);
+		    swal(
+			  'Oops...',
+			  'Could not save group. Error: ' + error,
+			  'error'
+			)
+	  	});
+		this.fetchGroups();
 	}
 
 	// On Component Mount (Runs after render :o)
 	componentDidMount() {	
-		this.fetchGroups(); // Fetch current users groups on initial component mount
-		
 		// Add event listener to button in UI
 		var addGroupBtn = document.getElementById('add-group');
-		addGroupBtn.addEventListener('mousedown', () => this.addGroup()); // I have no idea why the fat arrow function works
+		addGroupBtn.addEventListener('mousedown', () => this.handleAddGroup()); // I have no idea why the fat arrow function fixed the stack overflow error
+	
+		this.fetchGroups(); // Fetch current users groups on initial component mount
 	}
 
 	// When component updates
 	componentDidUpdate() {
-
-		if (!this.state.loaded) {
-			// If not loaded, fetch groups.
-			//this.fetchGroups();
-		}
+		//console.log("Component updated")
+		//this.render(); // Run all re-renders here
 	}
 
   	render() {
   		// Create array to hold groups
+  		//this.fetchGroups();
   		var groups_arr = [];
 
+  		//console.log("Render() executed")
   		//console.log(this.state.groups)
 
   		this.state.groups.map((group, index) => {
-  			groups_arr.push(
-  				<span className="nav-group-item" key={index} onClick={this.handleClick.bind(this, group)}><span className="icon icon-record" style={{color: group.label_color}}></span> {group.title}</span>
-			);
+  			groups_arr.push(<span className="nav-group-item" key={index} onClick={this.handleClick.bind(this, group)}><span className="icon icon-record" style={{color: group.label_color}}></span> {group.title} <span className="icon icon-trash" onClick={this.handleDelete.bind(this, group)}></span><span className="icon icon-pencil" onClick={this.handleEdit.bind(this, group)}></span></span>);
   		});
 
 	    return (<div className="group-react-renderer">{groups_arr}</div>);
