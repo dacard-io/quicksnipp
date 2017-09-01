@@ -1,8 +1,12 @@
 /* Controls code group rendering and behaviors. This also includes the "Add Group" button behaviors */
 
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios'; // Promise library
 import swal from 'sweetalert2';
+
+// Import child component
+import Snippets from './Snippets.js'
 
 class Groups extends Component {
 	// Lets create the state by initializing the constructor
@@ -85,7 +89,12 @@ class Groups extends Component {
 
 	// Handle click events on groups
 	handleClick(group) {
-		console.log("Selected group: ", group)
+		//console.log("Selected group: ", group)
+		this.setState({ current_group: group });
+		console.log("Group clicked:", this.state.current_group)
+		// When group selected rerender snippets component
+		ReactDOM.unmountComponentAtNode(document.getElementById('snippet-list'));
+		ReactDOM.render(<Snippets currentGroup={this.state.current_group} />, document.getElementById('snippet-list'));
 		this.render();
 	}
 
@@ -111,25 +120,49 @@ class Groups extends Component {
 	// Handle click events on groups
 	handleDelete(group) {
 		console.log("Delete group: ", group)
-		var api = 'http://localhost:8000/group/' + group.id;
-		var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
-		var authOptions = { 'Authorization': 'Token ' + token }
-		axios.delete(api, {headers: authOptions}).then(() => {
+		swal({
+		  title: 'Are you sure?',
+		  text: "You won't be able to revert this!",
+		  type: 'warning',
+		  showCancelButton: true,
+		  confirmButtonColor: '#3085d6',
+		  cancelButtonColor: '#d33',
+		  confirmButtonText: 'Yes, delete it!',
+		  cancelButtonText: 'No, cancel!',
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false
+		}).then(() => {
+			// Run delete with axios
+			var api = 'http://localhost:8000/group/' + group.id;
+			var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+			var authOptions = { 'Authorization': 'Token ' + token }
+			axios.delete(api, {headers: authOptions}).then(() => {
+			    swal(
+				    'Group Deleted',
+				    'Your selected group has been deleted.',
+				    'success'
+				  )
+				this.fetchGroups(); // This got it working!
+		  	}).catch((error) => {
+			    console.log(error);
+			    swal(
+				  'Oops...',
+				  'Could not delete group. Error: ' + error,
+				  'error'
+				)
+		  	});
+		}, (dismiss) => {
+		  // dismiss can be 'cancel', 'overlay',
+		  // 'close', and 'timer'
+		  if (dismiss === 'cancel') {
 		    swal(
-			  'Group Deleted',
-			  '',
-			  'success'
-			)
-			this.fetchGroups(); // This got it working!
-	  	}).catch(function (error) {
-		    console.log(error);
-		    swal(
-			  'Oops...',
-			  'Could not save group. Error: ' + error,
-			  'error'
-			)
-	  	});
-		this.fetchGroups();
+		      'Cancelled',
+		      'Your group was not deleted',
+		      'error'
+		    )
+		  }
+		});
 	}
 
 	// On Component Mount (Runs after render :o)
