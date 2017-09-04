@@ -89,13 +89,7 @@ class Groups extends Component {
 
 	// Handle click events on groups
 	handleClick(group) {
-		//console.log("Selected group: ", group)
 		this.setState({ current_group: group });
-		console.log("Group clicked:", this.state.current_group)
-		// When group selected rerender snippets component
-		ReactDOM.unmountComponentAtNode(document.getElementById('snippet-list'));
-		ReactDOM.render(<Snippets currentGroup={this.state.current_group} />, document.getElementById('snippet-list'));
-		this.render();
 	}
 
 	// Handle addgroup events - Having problem with function with using fetchGroups(). It was silently swallowing errors, so I created a handler instead
@@ -172,12 +166,20 @@ class Groups extends Component {
 		addGroupBtn.addEventListener('mousedown', () => this.handleAddGroup()); // I have no idea why the fat arrow function fixed the stack overflow error
 	
 		this.fetchGroups(); // Fetch current users groups on initial component mount
+		ReactDOM.render(<Snippets />, document.getElementById('snippet-list'));
 	}
 
 	// When component updates
 	componentDidUpdate() {
 		//console.log("Component updated")
 		//this.render(); // Run all re-renders here
+		// When group selected rerender snippets component
+		
+		// If state for current_group set, render the component
+		if (this.state.current_group) {
+			ReactDOM.unmountComponentAtNode(document.getElementById('snippet-list'));
+			ReactDOM.render(<Snippets currentGroup={this.state.current_group} />, document.getElementById('snippet-list'));
+		}
 	}
 
   	render() {

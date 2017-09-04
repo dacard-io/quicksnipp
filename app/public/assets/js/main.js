@@ -1,13 +1,11 @@
 $(document).ready(function(){
+
 	/*
-	$('#add-group').on('mousedown', function(){
-		// Create a sweetalert
-		swal(
-		  'Good job!',
-		  'Group added',
-		  'success'
-		);
-	})
+	window.setInterval(function(){
+	  	/// call your function here
+	  	Prism.highlightAll();
+    	console.log("Activated highlighting")
+	}, 2000);
 	*/
 
 	$('#save-snippet').on('mousedown', function(){

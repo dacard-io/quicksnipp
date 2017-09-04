@@ -52,9 +52,11 @@
     <div class="window">
 
       <!-- .toolbar-header sits at the top of your app -->
+      <!--
       <header class="toolbar toolbar-header">
         <h1 class="title">QuickSnipp</h1>
       </header>
+      -->
 
       <!-- Your app's content goes inside .window-content -->
       <div class="window-content">
@@ -68,7 +70,7 @@
             <span id="add-group" class="nav-group-item"><span class="icon icon-plus-circled"></span> Add Group</span>
             <hr/>
             <h5 class="nav-group-title text-center"><b>Snippet Groups</b></h5>
-            <span class="nav-group-item active"><span class="icon icon-box"></span> All Snippets</span>
+            <span class="nav-group-item"><span class="icon icon-box"></span> All Snippets</span>
             <!-- User's code groups are loaded here! -->
             <div id="code-groups">
               <!--
@@ -83,6 +85,17 @@
 
         <!-- Snippet View -->
         <div id="code-pane" class="pane">
+          <h2>Test.js</h2>
+          <p>Select Code Snippet</p>
+          <hr/>
+          
+          <div class="file-section">
+            <h4>FilesArray.css</h4>
+            <p>Lorem lipsum</p>
+            <pre><code class="language-php">echo "Hello world";</code></pre>
+          </div>
+          
+          <!--
           <form>
             <h2>Add Snippet</h2>
             <div class="form-group">
@@ -113,6 +126,8 @@
               <button type="submit" class="btn btn-form btn-primary">Save</button>
             </div>
           </form>
+          -->
+
         </div>
 
       </div>
@@ -124,6 +139,7 @@
           <button id="show-info" class="btn btn-default pull-left">
             <span class="icon icon-info"></span>
           </button>
+          <small>&nbsp;&nbsp;QuickSnipp 1.0.0</small>
           <button class="btn btn-default hidden">
             Cancel
           </button>
@@ -143,8 +159,8 @@
     <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
     <script>window.jQuery || document.write('<script src="%PUBLIC_URL%/assets/js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
     <script src="%PUBLIC_URL%/assets/js/vendor/plugins.js"></script>
-        <script src="%PUBLIC_URL%/assets/js/vendor/prism.js"></script>
-        <script src="%PUBLIC_URL%/assets/js/vendor/sweetalert2.min.js"></script>
+    <script src="%PUBLIC_URL%/assets/js/vendor/prism.js"></script>
+    <script src="%PUBLIC_URL%/assets/js/vendor/sweetalert2.min.js"></script>
     
     <!-- Your JS Files -->
     <script src="%PUBLIC_URL%/assets/js/main.js"></script>
