@@ -8,15 +8,6 @@ $(document).ready(function(){
 	}, 2000);
 	*/
 
-	$('#save-snippet').on('mousedown', function(){
-		// Create a sweetalert
-		swal(
-		  'Good job!',
-		  'Snippet Saved',
-		  'success'
-		);
-	})
-
 	$('#show-info').on('mousedown', function(){
 		// Create a sweetalert
 		swal(

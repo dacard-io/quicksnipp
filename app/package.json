@@ -9,8 +9,10 @@
   },
   "devDependencies": {
     "axios": "^0.16.2",
+    "codemirror": "^5.30.0",
     "jquery-ui": "^1.12.1",
     "prismjs": "^1.6.0",
+    "react-codemirror": "^1.0.0",
     "sweetalert2": "^6.6.9"
   },
   "scripts": {

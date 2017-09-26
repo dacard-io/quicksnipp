@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/style.css">
     <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/vendor/prism.css">
     <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/vendor/sweetalert2.min.css">
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/vendor/codemirror.css">
     <!--
       Notice the use of %PUBLIC_URL% in the tag above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -44,6 +45,9 @@
     }
     .btn-negative .icon {
       color: white;
+    }
+    #toolbar-controls {
+      display: inline;
     }
     </style>
   </head>
@@ -135,19 +139,23 @@
       </div>
 
       <footer class="toolbar toolbar-footer">
-        <div class="toolbar-actions">
+        <div class="toolbar-actions" id="toolbar-actions">
           <button id="show-info" class="btn btn-default pull-left">
             <span class="icon icon-info"></span>
           </button>
           <small>&nbsp;&nbsp;QuickSnipp 1.0.0</small>
-          <button class="btn btn-default hidden">
-            Cancel
-          </button>
 
-          <button id="save-snippet" class="btn btn-primary pull-right hidden">Save</button>
-          <button id="delete-snippet" class="btn btn-negative pull-right hidden">
-            <span class="icon icon-trash"></span>
-          </button>
+          <!-- Where react will append controls for the view -->
+          <div id="toolbar-controls">
+            <button class="btn btn-default hidden">
+              Cancel
+            </button>
+            <!--<button id="save-snippet" class="btn btn-primary pull-right hidden">Save</button>-->
+            <button id="delete-snippet" class="btn btn-negative pull-right hidden">
+              <span class="icon icon-trash"></span>
+            </button>
+          </div>
+
         </div>
       </footer>
 

@@ -72,7 +72,6 @@ class Groups extends Component {
 	
 	// This function should only run on mount!
 	fetchGroups() {
-		console.log("fetchGroups() function starting");
 		var api = 'http://localhost:8000/groups/';
 		var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
 		var authOptions = { 'Authorization': 'Token ' + token }
