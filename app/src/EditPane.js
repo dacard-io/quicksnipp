@@ -21,8 +21,6 @@ class FileForm extends Component {
       file_code: ''
     }
 
-    contextTypes: 
-
     // Bind events to this component
     this.nameChange = this.nameChange.bind(this);
     this.descChange = this.descChange.bind(this);
@@ -108,6 +106,9 @@ class EditPane extends Component {
       current_files: '',
       loaded: false
     };
+
+    // Store files without using state; I keep forgetting React is still just ES2016. You can store stuff normally.
+    this.current_files = [];
   }
 
   // Use React's context api to access child component data
@@ -167,20 +168,14 @@ class EditPane extends Component {
     for (var i = 0; i < files.length; i++) {
       var file_name = document.getElementById('file-title-' + this.state.current_snippet.files[i].id).value;
       var file_desc = document.getElementById('file-desc-' + this.state.current_snippet.files[i].id).value;
-      /*
-      var codemirror_ref = Object.values(this.refs)[i]; // Get the object values directly, to use the function
-      console.log("Current id: ", this.state.current_snippet.files[i].id)
-      console.log("codemirror_ref: ", document.getElementsByClassName('file-editor-' + this.state.current_snippet.files[i].id));
-      //var file_code = codemirror_ref.getCodeMirror().getValue() // That is ugly :o - have to use refs, then get the key of the refs
-      console.log("File_code: ", codemirror_ref[0].querySelector('textarea'));
-      var file_code = codemirror_ref["0"];
+      var file_code = this.current_files[i].getCodeMirror().getValue(); // Get the object values directly, from the contextual variable
       
       console.log("To be saved: ", file_name, " ,", file_desc, " ,", file_code)
       this.saveFile(this.state.current_snippet.files[i].id, file_name, file_desc, 'php', file_code) // Just save the first snippet for testing
-      */
      
       // Just get the refs working first
-      console.log('Context: ', this.child.getCodeMirror().getValue()); // So fucking close.
+      //console.log('Global Context: ', this); // So fucking close.
+      //console.log('Context: ', this.current_files[i].getCodeMirror().getValue()); // So fucking close.
       
     }
     // Update snippet info (snippet title, and description)
@@ -267,7 +262,7 @@ class EditPane extends Component {
       this.state.current_snippet.files.map((file, index) => {
         // The file to save to will be placed inside as an html-attrib 'data-file', use this to find the referring file.
         // Append file component to dynamically bind two-way data with all those fields
-        files_arr.push(<FileForm editorRef={ref => (this.child = ref)} key={index} fileid={file.id} filename={file.title} filedesc={file.description} filelang={file.language} filecode={file.code} />);
+        files_arr.push(<FileForm editorRef={ref => (this.current_files[index] = ref)} key={index} fileid={file.id} filename={file.title} filedesc={file.description} filelang={file.language} filecode={file.code} />);
       });
     }
     
