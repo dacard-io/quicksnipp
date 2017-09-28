@@ -13,6 +13,7 @@
     "jquery-ui": "^1.12.1",
     "prismjs": "^1.6.0",
     "react-codemirror": "^1.0.0",
+    "react-codemirror2": "^2.0.0",
     "sweetalert2": "^6.6.9"
   },
   "scripts": {

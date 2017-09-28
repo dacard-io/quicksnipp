@@ -73,6 +73,16 @@ class ViewPane extends Component {
     // Handle case where the response is not here yet
     if ( !this.state.current_snippet ) {
       return (<div className="snippet-edit-react-renderer"><h2>No Snippet Loaded</h2></div>);
+    } else if ( files_arr.length === 0 ) {
+      // If files_arr empty, show no files
+      return (
+        <div className="snippet-view-react-renderer">
+          <h2>{this.state.current_snippet.title}</h2>
+          <p>{this.state.current_snippet.description}</p>
+          <hr/>
+          <p><b>No files found</b></p>
+        </div>
+      );
     } else {
       return (
         <div className="snippet-view-react-renderer">
