@@ -18,7 +18,8 @@ class FileForm extends Component {
       file_name: '',
       file_description: '',
       file_lang: '',
-      file_code: ''
+      file_code: '',
+      file_exists: true
     }
 
     // Bind events to this component
@@ -26,6 +27,7 @@ class FileForm extends Component {
     this.descChange = this.descChange.bind(this);
     this.langChange = this.langChange.bind(this);
     this.codeChange = this.codeChange.bind(this);
+    //this.handleDelete = this.handleDelete.bind(this);
   }
 
   nameChange(event) {
@@ -39,13 +41,53 @@ class FileForm extends Component {
   }
   codeChange(event) {
     this.setState({file_code: event}); // Since I'm using the codemirror-react component, just need the event
+  }
 
-    console.log("Code is being edited: ", event);
+  // Handle delete for click events on file
+  handleDelete(file) {
+    console.log("Delete file: ", file)
+    
+    swal({
+      title: 'Delete "' + file.file_name + '"?',
+      text: "You won't be able to revert this file!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#fcfcfc',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonClass: 'btn btn-success',
+      cancelButtonClass: 'btn btn-danger',
+      buttonsStyling: false
+    }).then(() => {
+      // Run delete with axios
+      var api = 'http://localhost:8000/file/' + file.file_id;
+      var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+      var authOptions = { 'Authorization': 'Token ' + token }
+      axios.delete(api, {headers: authOptions}).then(() => {
+        swal(
+          'File Deleted',
+          'Your selected file has been deleted.',
+          'success'
+        )
+        // Set current file to not exist, rendering nothing (A little weird but it can work for now
+        this.setState({file_exists: false});
+      }).catch((error) => {
+        console.log(error);
+        swal(
+          'Oops...',
+          'Could not delete file. Error: ' + error,
+          'error'
+        )
+      });
+    });
+    
   }
 
   // When component props recieved, set state to equal props
   componentWillReceiveProps() {
     this.setState({ 
+      file_id: this.props.fileid,
       file_name: this.props.filename,
       file_description: this.props.filedesc,
       file_lang: this.props.filelang,
@@ -68,30 +110,37 @@ class FileForm extends Component {
       lineNumbers: true
     }
 
-    // Use props passed into component to quickly get values, and bind input to component state 
-    return (
-      <div className="file-section" data-lang={this.state.file_lang} data-file={this.props.fileid}>
-        <div className="form-group">
-          <label className="file-input-label">File Name</label>
-          <input type="text" className="form-control" id={"file-title-" + this.props.fileid} value={this.state.file_name} onChange={this.nameChange} />
+    // If file currently exists, render file and data
+    if (this.state.file_exists) {
+      // Use props passed into component to quickly get values, and bind input to component state 
+      return (
+        <div className="file-section" data-lang={this.state.file_lang} data-file={this.props.fileid}>
+          <div className="form-group">
+            <label className="file-input-label">File Name</label>
+            <button className="btn btn-mini btn-negative delete-file-btn" data-file={this.props.fileid} onClick={this.handleDelete.bind(this, this.state)}>Delete File&nbsp;&nbsp;<span className="icon icon-trash"></span></button>
+            <input type="text" className="form-control" id={"file-title-" + this.props.fileid} value={this.state.file_name} onChange={this.nameChange} />
+          </div>
+          <div className="form-group">
+            <select className="form-control" id={"file-lang-" + this.props.fileid}>
+              <option value="javascript">Javascript</option>
+              <option value="php">PHP</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="file-input-label">File Description</label>
+            <input type="text" className="form-control" id={"file-desc-" + this.props.fileid} value={this.state.file_desc} onChange={this.descChange} />
+          </div>
+          <div className="form-group">
+            <CodeMirror ref={this.props.editorRef} className={"file-editor-" + this.props.fileid} value={this.props.filecode || '# Enter some code...'} onChange={this.codeChange} options={options} />
+          </div>
+          <hr/>
         </div>
-        <div className="form-group">
-          <select className="form-control" id={"file-lang-" + this.props.fileid}>
-            <option value="javascript">Javascript</option>
-            <option value="php">PHP</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label className="file-input-label">File Description</label>
-          <input type="text" className="form-control" id={"file-desc-" + this.props.fileid} value={this.state.file_desc} onChange={this.descChange} />
-        </div>
-        <div className="form-group">
-          <CodeMirror ref={this.props.editorRef} className={"file-editor-" + this.props.fileid} value={this.props.filecode || '# Enter some code...'} onChange={this.codeChange} options={options} />
-        </div>
-        <hr/>
-      </div>
-    )
-    // Pass ref to child component to refer to it using a custom ref called editorRef, and use regular ref inside the component
+      )
+      // Pass ref to child component to refer to it using a custom ref called editorRef, and use regular ref inside the component
+    } else {
+      // File does not exist. Render nothing (or empty div) - Holy hell this works really well
+      return (<div className="file-section empty"></div>)
+    }
   }
 }
 
