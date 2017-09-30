@@ -16,8 +16,7 @@ class Groups extends Component {
 		// Create the state
 		this.state = {
 			groups: [],
-			current_group: '',
-			loaded: false
+			current_group: ''
 		};
 	}
 
@@ -76,9 +75,20 @@ class Groups extends Component {
 		var authOptions = { 'Authorization': 'Token ' + token }
 		axios.get(api, {headers: authOptions})
 			.then(res => {
-				console.log("Groups fetched!")
 				this.setState({ groups: res.data });
-				this.setState({ loaded: true });
+				//this.render();
+			}).catch((error) => {
+				console.log(error);
+			});
+	}
+
+	fetchSingleGroup(group) {
+		var api = 'http://localhost:8000/group/' + group.id;
+		var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+		var authOptions = { 'Authorization': 'Token ' + token }
+		axios.get(api, {headers: authOptions})
+			.then(res => {
+				this.setState({ current_group: res.data });
 				//this.render();
 			}).catch((error) => {
 				console.log(error);
@@ -88,6 +98,7 @@ class Groups extends Component {
 	// Handle click events on groups
 	handleClick(group) {
 		this.setState({ current_group: group });
+		this.fetchSingleGroup(group);
 	}
 
 	// Handle addgroup events - Having problem with function with using fetchGroups(). It was silently swallowing errors, so I created a handler instead
@@ -149,11 +160,14 @@ class Groups extends Component {
 				  '',
 				  'success'
 				)
+
 				// Render
 				ReactDOM.unmountComponentAtNode(document.getElementById('snippet-list'));
 				if (this.state.current_group) {
+					this.fetchSingleGroup(this.state.current_group)
 					ReactDOM.render(<Snippets currentGroup={this.state.current_group} />, document.getElementById('snippet-list')); // Render selected group
 				} else {
+					this.fetchGroups()
 					ReactDOM.render(<Snippets />, document.getElementById('snippet-list')); // With no group selected, render all snippets
 				}
 		  	}).catch(function (error) {
