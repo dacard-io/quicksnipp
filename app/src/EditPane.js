@@ -9,6 +9,13 @@ var config = require('./config'); // Load configs
 import '../node_modules/codemirror/mode/javascript/javascript';
 import '../node_modules/codemirror/mode/php/php';
 
+var logged_in = false;
+
+// Simple login conditional. If token found in localStorage, logged in. This will restrict all AJAX requests.
+if (localStorage.getItem("token") !== null) {
+  logged_in = true;
+}
+
 // Seperate component to render file forms and keep their own independent states
 class FileForm extends Component {
   constructor(){
@@ -46,7 +53,8 @@ class FileForm extends Component {
 
   // Handle delete for click events on file
   handleDelete(file) {
-    console.log("Delete file: ", file)
+    // If logged in, proceed
+    if (logged_in) {
     
     swal({
       title: 'Delete "' + file.file_name + '"?',
@@ -95,6 +103,7 @@ class FileForm extends Component {
       }
     });
     
+    } // End of auth check
   }
 
   // When component props recieved, set state to equal props
@@ -178,6 +187,9 @@ class EditPane extends Component {
 
   // Fetch all snippets
   fetchSelf(id) {
+    // If logged in, proceed
+    if (logged_in) {
+
     var api = config.api.url + '/snippet/' + id;
     var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
@@ -188,10 +200,15 @@ class EditPane extends Component {
       }).catch((error) => {
         console.log(error);
       });
+
+    } // end of auth check
   }
 
   // Save file by give file id, and other data to save
   saveFile(id, title, desc, lang, code) {
+    // If logged in, proceed
+    if (logged_in) {
+
     // Perform a patch with axios to update file data
     var api = config.api.url + '/file/' + id; // Concat id to url to utilize API to patch single file
     var token = localStorage.getItem("token");
@@ -217,6 +234,8 @@ class EditPane extends Component {
         'error'
       )
     });
+
+    } // End of auth check
   }
 
   // Save all data in snippet (pass in snippet object from prop)
@@ -246,6 +265,9 @@ class EditPane extends Component {
   }
 
   createFile() {
+    // If logged in, proceed
+    if (logged_in) {
+
     var api = config.api.url + '/files/';
     var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
@@ -274,9 +296,14 @@ class EditPane extends Component {
     });
 
     this.render(); // Rerender
+
+    } // End of auth check
   }
 
   deleteFile(id) {
+    // If logged in, proceed
+    if (logged_in) {
+
     // Run delete with axios
     var api = config.api.url + '/file/' + id;
     var token = localStorage.getItem("token");
@@ -295,6 +322,8 @@ class EditPane extends Component {
         'error'
       )
     });
+
+    } // End of auth check
   }
 
   // After render

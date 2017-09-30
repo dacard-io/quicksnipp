@@ -11,10 +11,9 @@ import Snippets from './Snippets.js'
 
 var logged_in = false;
 
-// Simple login conditional
+// Simple login conditional. If token found in localStorage, logged in. This will restrict all AJAX requests.
 if (localStorage.getItem("token") !== null) {
-  //...
-  console.log("Token found: ", localStorage.getItem("token"))
+  logged_in = true;
 }
 
 class Groups extends Component {
@@ -30,6 +29,9 @@ class Groups extends Component {
 	}
 
 	addGroup() {
+		// If logged in, proceed
+		if (logged_in) {
+
 		// SweetAlerts2 does not support forms... Well I'm doing it anyway :D
 		swal({
 		  title: 'Add a Group',
@@ -74,11 +76,16 @@ class Groups extends Component {
 				)
 		  	});
 		}).catch(() => swal.noop)
+
+		} // End of auth check
 	}
 
 	// I typically put my functions before state management
 	// This function should only run on mount!
 	fetchGroups() {
+		// If logged in, proceed
+		if (logged_in) {
+
 		var api = config.api.url + '/groups/';
 		var token = localStorage.getItem("token");
 		var authOptions = { 'Authorization': 'Token ' + token }
@@ -89,9 +96,14 @@ class Groups extends Component {
 			}).catch((error) => {
 				console.log(error);
 			});
+
+		} // End of auth check
 	}
 
 	fetchSingleGroup(group) {
+		// If logged in, proceed
+		if (logged_in) {
+
 		var api = config.api.url + '/group/' + group.id;
 		var token = localStorage.getItem("token");
 		var authOptions = { 'Authorization': 'Token ' + token }
@@ -102,6 +114,8 @@ class Groups extends Component {
 			}).catch((error) => {
 				console.log(error);
 			});
+
+		} // End of auth check
 	}
 
 	// Handle click events on groups
@@ -121,8 +135,8 @@ class Groups extends Component {
 	}
 
 	handleAddSnippet(group) {
-		console.log("Adding snippet in: ", group)
-		console.log("Current state groups: ", this.state.groups)
+		// If logged in, proceed
+		if (logged_in) {
 
 		// SweetAlerts2 does not support forms... Well I'm doing it anyway :D
 		swal({
@@ -188,6 +202,8 @@ class Groups extends Component {
 				)
 		  	});
 		}).catch(() => swal.noop)
+		
+		} // End of auth check
 	}
 
 	handleViewAll() {
@@ -207,7 +223,9 @@ class Groups extends Component {
 	}
 	// Handle click events on groups
 	handleDelete(group) {
-		console.log("Delete group: ", group)
+		// If logged in, proceed
+		if (logged_in) {
+		
 		swal({
 		  title: 'Delete group "' + group.title + '"?',
 		  text: "You won't be able to revert this",
@@ -253,6 +271,8 @@ class Groups extends Component {
 			*/
 		  }
 		});
+
+		} // End of auth check
 	}
 
 	// On Component Mount (Runs after render :o)

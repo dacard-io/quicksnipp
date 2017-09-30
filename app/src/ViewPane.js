@@ -5,6 +5,13 @@ import axios from 'axios';
 import Prism from 'prismjs' // Syntax highlighting lib
 var config = require('./config'); // Load configs
 
+var logged_in = false;
+
+// Simple login conditional. If token found in localStorage, logged in. This will restrict all AJAX requests.
+if (localStorage.getItem("token") !== null) {
+  logged_in = true;
+}
+
 class ViewPane extends Component {
   // Lets create the state by initializing the constructor
   constructor(){
@@ -19,6 +26,9 @@ class ViewPane extends Component {
 
   // Fetch self data
   fetchSelf(id) {
+    // If logged in, proceed
+    if (logged_in) {
+
     var api = config.api.url + '/snippet/' + id;
     var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
@@ -31,6 +41,8 @@ class ViewPane extends Component {
       }).catch((error) => {
         console.log(error);
       });
+
+    } // End of auth check
   }
 
   // After render

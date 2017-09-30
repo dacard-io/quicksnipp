@@ -14,7 +14,7 @@ ReactDOM.render(
 // Save data to the current local store
 localStorage.setItem("token", "81aaaac4ad188dab4aa27038abc21ea03268d08b");
 // Access some stored data
-alert( "token = " + localStorage.getItem("token"));
+//alert( "token = " + localStorage.getItem("token"));
 
 //localStorage.removeItem("token");
 

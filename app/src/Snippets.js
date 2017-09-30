@@ -10,6 +10,13 @@ var config = require('./config'); // Load configs
 import ViewPane from './ViewPane.js'
 import EditPane from './EditPane.js'
 
+var logged_in = false;
+
+// Simple login conditional. If token found in localStorage, logged in. This will restrict all AJAX requests.
+if (localStorage.getItem("token") !== null) {
+  logged_in = true;
+}
+
 class Snippets extends Component {
   constructor() {
     super(); // Super is the context of the state in the component
@@ -24,6 +31,9 @@ class Snippets extends Component {
 
   // Fetch all snippets
   fetchAllSnippets() {
+    // If logged in, proceed
+    if (logged_in) {
+
     var api = config.api.url + '/snippets/';
     var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
@@ -34,6 +44,8 @@ class Snippets extends Component {
       }).catch((error) => {
         console.log(error);
       });
+
+    } // End auth check
   }
 
   // Handle click events on snippegs
@@ -49,6 +61,9 @@ class Snippets extends Component {
   }
 
   handleDelete(snippet) {
+    // If logged in, proceed
+    if (logged_in) {
+
     swal({
       title: 'Delete "' + snippet.title + '"?',
       text: "You won't be able to revert this!",
@@ -99,6 +114,8 @@ class Snippets extends Component {
       */
       }
     });
+
+    } // End auth check
   }
 
   // On initial component render/mount
@@ -149,6 +166,9 @@ class Snippets extends Component {
       // So if state does not contain snippets, set the state to all the snippets found. That way it won't enter a render loop
       // If state has less than 1 snippet, pull all snippets (empty)
       if (this.state.snippets < 1) {
+        // If logged in, proceed
+        if (logged_in) {
+
         var api = config.api.url + '/snippets/';
         var token = localStorage.getItem("token");
         var authOptions = { 'Authorization': 'Token ' + token }
@@ -175,6 +195,8 @@ class Snippets extends Component {
           }).catch((error) => {
             console.log(error);
           });
+          
+        } // End auth check
       }
     }
     
