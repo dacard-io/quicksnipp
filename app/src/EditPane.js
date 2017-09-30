@@ -56,8 +56,8 @@ class FileForm extends Component {
       cancelButtonColor: '#fcfcfc',
       confirmButtonText: 'Delete',
       cancelButtonText: 'Cancel',
-      confirmButtonClass: 'btn btn-success',
-      cancelButtonClass: 'btn btn-danger',
+      confirmButtonClass: 'btn btn-large btn-negative',
+      cancelButtonClass: 'btn btn-large btn-default',
       buttonsStyling: false
     }).then(() => {
       // Run delete with axios
@@ -80,6 +80,18 @@ class FileForm extends Component {
           'error'
         )
       });
+    }, (dismiss) => {
+      // dismiss can be 'cancel', 'overlay',
+      // 'close', and 'timer'
+      if (dismiss === 'cancel') {
+        /*
+        swal(
+          'Cancelled',
+          'Your group was not deleted',
+          'error'
+        )
+      */
+      }
     });
     
   }
@@ -128,7 +140,7 @@ class FileForm extends Component {
           </div>
           <div className="form-group">
             <label className="file-input-label">File Description</label>
-            <input type="text" className="form-control" id={"file-desc-" + this.props.fileid} value={this.state.file_desc} onChange={this.descChange} />
+            <input type="text" className="form-control" id={"file-desc-" + this.props.fileid} value={this.state.file_description} onChange={this.descChange} />
           </div>
           <div className="form-group">
             <CodeMirror ref={this.props.editorRef} className={"file-editor-" + this.props.fileid} value={this.props.filecode || '# Enter some code...'} onChange={this.codeChange} options={options} />

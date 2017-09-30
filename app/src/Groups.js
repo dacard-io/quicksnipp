@@ -69,7 +69,6 @@ class Groups extends Component {
 	}
 
 	// I typically put my functions before state management
-	
 	// This function should only run on mount!
 	fetchGroups() {
 		var api = 'http://localhost:8000/groups/';
@@ -101,6 +100,79 @@ class Groups extends Component {
 		console.log("AddGroup handler ran")
 	}
 
+	handleAddSnippet(group) {
+		console.log("Adding snippet in: ", group)
+		console.log("Current state groups: ", this.state.groups)
+
+		// SweetAlerts2 does not support forms... Well I'm doing it anyway :D
+		swal({
+		  title: 'Add a Snippet',
+		  html:
+		    '<input id="input-snippet-title" class="swal2-input" placeholder="Name of Snippet" required>' +
+		    '<input id="input-snippet-desc" class="swal2-input" placeholder="Description of Snippet">' +
+		    '<select id="input-snippet-group" class="swal2-input">' +
+		    '<option value="">None</option>' +
+		    '</select>',
+		  preConfirm: function () {
+		    return new Promise(function (resolve) {
+		      resolve([
+		        //$('#swal-input1').val(),
+		        //$('#swal-input2').val()
+		        document.getElementById('input-snippet-title').value,
+		        document.getElementById('input-snippet-desc').value,
+		        document.getElementById('input-snippet-group').value
+		      ])
+		    })
+		  },
+		  onOpen: () => {
+		    // Append groups to the snippet group selector
+		    for (var i = 0; i < this.state.groups.length; i++) {
+		    	console.log(this.state.groups[i]);
+		    	var option = document.createElement("option");
+		    	document.getElementById('input-snippet-group').appendChild(option);
+		    	option.value = this.state.groups[i].id;
+		    	option.textContent = this.state.groups[i].title;
+		    }
+		  }
+		}).then((result) => {
+		  	// Submit POST to create new group
+		  	var api = 'http://localhost:8000/snippets/';
+			var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+			var authOptions = { 'Authorization': 'Token ' + token }
+			axios.post(api, {
+		    	'title': result[0],
+				'description': result[1],
+				'group_id': result[2]
+		  	}, {headers: authOptions}).then(() => {
+			    swal(
+				  'Snippet Created in ID "' + result[2] + '"',
+				  '',
+				  'success'
+				)
+				// Render
+				ReactDOM.unmountComponentAtNode(document.getElementById('snippet-list'));
+				if (this.state.current_group) {
+					ReactDOM.render(<Snippets currentGroup={this.state.current_group} />, document.getElementById('snippet-list')); // Render selected group
+				} else {
+					ReactDOM.render(<Snippets />, document.getElementById('snippet-list')); // With no group selected, render all snippets
+				}
+		  	}).catch(function (error) {
+			    console.log(error);
+			    swal(
+				  'Oops...',
+				  'Could not save snippet. Error: ' + error,
+				  'error'
+				)
+		  	});
+		}).catch(() => swal.noop)
+	}
+
+	handleViewAll() {
+		this.setState({ current_group: '' }); // Reset current group back to nothing
+		ReactDOM.unmountComponentAtNode(document.getElementById('snippet-list'));
+		ReactDOM.render(<Snippets />, document.getElementById('snippet-list'));
+	}
+
 	// Handle click events on groups
 	handleEdit(group) {
 		console.log("Edit group: ", group)
@@ -114,16 +186,16 @@ class Groups extends Component {
 	handleDelete(group) {
 		console.log("Delete group: ", group)
 		swal({
-		  title: 'Are you sure?',
-		  text: "You won't be able to revert this!",
+		  title: 'Delete group "' + group.title + '"?',
+		  text: "You won't be able to revert this",
 		  type: 'warning',
 		  showCancelButton: true,
 		  confirmButtonColor: '#3085d6',
 		  cancelButtonColor: '#d33',
 		  confirmButtonText: 'Yes, delete it!',
 		  cancelButtonText: 'No, cancel!',
-		  confirmButtonClass: 'btn btn-success',
-		  cancelButtonClass: 'btn btn-danger',
+		  confirmButtonClass: 'btn btn-large btn-negative',
+		  cancelButtonClass: 'btn btn-large btn-default',
 		  buttonsStyling: false
 		}).then(() => {
 			// Run delete with axios
@@ -149,11 +221,13 @@ class Groups extends Component {
 		  // dismiss can be 'cancel', 'overlay',
 		  // 'close', and 'timer'
 		  if (dismiss === 'cancel') {
+		  	/*
 		    swal(
 		      'Cancelled',
 		      'Your group was not deleted',
 		      'error'
 		    )
+			*/
 		  }
 		});
 	}
@@ -162,8 +236,14 @@ class Groups extends Component {
 	componentDidMount() {	
 		// Add event listener to button in UI
 		var addGroupBtn = document.getElementById('add-group');
+		var addSnippetBtn = document.getElementById('add-snippet');
+		var allSnippetsBtn = document.getElementById('all-snippets');
 		addGroupBtn.addEventListener('mousedown', () => this.handleAddGroup()); // I have no idea why the fat arrow function fixed the stack overflow error
-	
+		addSnippetBtn.addEventListener('mousedown', () => this.handleAddSnippet(this.state.current_group)); // Pass in current group to function
+		allSnippetsBtn.addEventListener('mousedown', () => this.handleViewAll());
+
+		console.log("Button found: ", allSnippetsBtn)
+
 		this.fetchGroups(); // Fetch current users groups on initial component mount
 		ReactDOM.render(<Snippets />, document.getElementById('snippet-list'));
 	}

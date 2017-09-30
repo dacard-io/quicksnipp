@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import swal from 'sweetalert2'
 
 // Import child components
 import ViewPane from './ViewPane.js'
@@ -14,9 +15,9 @@ class Snippets extends Component {
 
     // Create the state
     this.state = {
-      snippets: [], // THis component doesn't need that many states. Just the current snippet
+      snippets: [], // THis component doesn't need that many states. Just the current snippet. If no prop is passed, this will be filled with all snippets found in group
       current_snippet: '',
-      current_view: '', // Tis controls the current view. (edit, view)
+      current_view: '', // This controls the current view. (edit, view)
     };
   }
 
@@ -46,11 +47,64 @@ class Snippets extends Component {
     this.setState({ current_view: 'edit' });
   }
 
+  handleDelete(snippet) {
+    swal({
+      title: 'Delete "' + snippet.title + '"?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#fcfcfc',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonClass: 'btn btn-large btn-negative',
+      cancelButtonClass: 'btn btn-large btn-default',
+      buttonsStyling: false
+    }).then(() => {
+      // Run delete with axios
+      var api = 'http://localhost:8000/snippet/' + snippet.id;
+      var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+      var authOptions = { 'Authorization': 'Token ' + token }
+      axios.delete(api, {headers: authOptions}).then(() => {
+        swal(
+          'Snippet Deleted',
+          'Your selected file has been deleted.',
+          'success'
+        )
+        // Set state to something to rerender.
+        this.setState({current_view: 'snippet_deleted'});
+
+        // Delete DOM element directly of current selected snippet
+        document.getElementById('tr-snippet-' + snippet.id).remove(); // Is this a bad idea. I don't know.
+        this.setState(this.state); // Force Rerender by setting state to self. Wtf
+      }).catch((error) => {
+        console.log(error);
+        swal(
+          'Oops...',
+          'Could not delete snippet. Error: ' + error,
+          'error'
+        )
+      });
+    }, (dismiss) => {
+      // dismiss can be 'cancel', 'overlay',
+      // 'close', and 'timer'
+      if (dismiss === 'cancel') {
+        /*
+        swal(
+          'Cancelled',
+          'Your group was not deleted',
+          'error'
+        )
+      */
+      }
+    });
+  }
+
   // On initial component render/mount
   componentDidMount() { 
     //this.setState({currentgroup: this.props.currentGroup})
     //this.fetchSnippets(this.state.currentgroup);
-    console.log(this.state.currentgroup)
+    //console.log(this.state.currentgroup)
   }
 
   // Oh wait, you should set handlers to change the state, then when the state changes, then do something
@@ -80,54 +134,79 @@ class Snippets extends Component {
     if (stateSnippets) {
       stateSnippets.map((snippet, index) => {
           snippets_arr.push(
-            <tr key={index}>
+            <tr key={index} id={"tr-snippet-" + snippet.id}>
               <td onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
               <td onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
               <td>
                   <button className="btn btn-mini btn-default" onClick={this.handleEdit.bind(this, snippet)}><span className="icon icon-pencil"></span> Edit</button>&nbsp;&nbsp;
-                  <button className="btn btn-mini btn-negative"><span className="icon icon-trash"></span></button>
+                  <button className="btn btn-mini btn-negative" onClick={this.handleDelete.bind(this, snippet)}><span className="icon icon-trash"></span></button>
               </td>
             </tr>
           );
       });
     } else {
-      console.log("stateSnippets evaluated to false")
-      var api = 'http://localhost:8000/snippets/';
-      var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
-      var authOptions = { 'Authorization': 'Token ' + token }
-      axios.get(api, {headers: authOptions})
-        .then(res => {
-          console.log(res)
-          res.data.map((snippet, index) => {
-            snippets_arr.push(
-              <tr key={index}>
-                <td onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
-                <td onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
-                <td>
-                    <button className="btn btn-mini btn-default" onClick={this.handleEdit.bind(this, snippet)}><span className="icon icon-pencil"></span> Edit</button>&nbsp;&nbsp;
-                    <button className="btn btn-mini btn-negative"><span className="icon icon-trash"></span></button>
-                </td>
-              </tr>
-            );
+      // So if state does not contain snippets, set the state to all the snippets found. That way it won't enter a render loop
+      // If state has less than 1 snippet, pull all snippets (empty)
+      if (this.state.snippets < 1) {
+        var api = 'http://localhost:8000/snippets/';
+        var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+        var authOptions = { 'Authorization': 'Token ' + token }
+
+        // Run axios request to pull all snippets
+        axios.get(api, {headers: authOptions})
+          .then(res => {
+            res.data.map((snippet, index) => {
+              snippets_arr.push(
+                <tr key={index} id={"tr-snippet-" + snippet.id}>
+                  <td onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
+                  <td onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
+                  <td>
+                      <button className="btn btn-mini btn-default" onClick={this.handleEdit.bind(this, snippet)}><span className="icon icon-pencil"></span> Edit</button>&nbsp;&nbsp;
+                      <button className="btn btn-mini btn-negative" onClick={this.handleDelete.bind(this, snippet)}><span className="icon icon-trash"></span></button>
+                  </td>
+                </tr>
+              );
+            });
+
+            // When mapping completed, add snippets to state
+            this.setState({snippets: snippets_arr})
+
+          }).catch((error) => {
+            console.log(error);
           });
-        }).catch((error) => {
-          console.log(error);
-        });
+      }
     }
+    
 
     // Ugh I have to render the whole table
-    return (
-      <table className="table-striped">
-        <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody>{snippets_arr}</tbody>
-      </table>
+    if (!stateSnippets) {
+      return (
+        <table className="table-striped">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>{this.state.snippets}</tbody>
+        </table>
       );
+    } else {
+      return (
+        <table className="table-striped">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody><tr></tr>{snippets_arr}</tbody>
+        </table>
+      );
+    }
+    
   }
 }
 

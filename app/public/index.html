@@ -61,6 +61,12 @@
     .delete-file-btn {
       float: right;
     }
+    #all-snippets {
+
+    }
+    .swal2-modal .swal2-buttonswrapper button:first-child {
+      margin-right: 2rem;
+    }
     </style>
   </head>
   <body>
@@ -86,7 +92,7 @@
             <span id="add-group" class="nav-group-item"><span class="icon icon-plus-circled"></span> Add Group</span>
             <hr/>
             <h5 class="nav-group-title text-center"><b>Snippet Groups</b></h5>
-            <span class="nav-group-item"><span class="icon icon-box"></span> All Snippets</span>
+            <span class="nav-group-item" id="all-snippets"><span class="icon icon-box"></span> All Snippets</span>
             <!-- User's code groups are loaded here! -->
             <div id="code-groups">
               <!--
@@ -101,49 +107,7 @@
 
         <!-- Snippet View -->
         <div id="code-pane" class="pane">
-          <h2>Test.js</h2>
-          <p>Select Code Snippet</p>
-          <hr/>
-          
-          <div class="file-section">
-            <h4>FilesArray.css</h4>
-            <p>Lorem lipsum</p>
-            <pre><code class="language-php">echo "Hello world";</code></pre>
-          </div>
-          
-          <!--
-          <form>
-            <h2>Add Snippet</h2>
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Snippet Filename">
-            </div>
-            <div class="form-group">
-              <input type="password" class="form-control" placeholder="Snippet Description">
-            </div>
-            <div class="form-group">
-              <label>Language</label>
-                <select class="form-control">
-                  <option>Option one</option>
-                  <option>Option two</option>
-                  <option>Option three</option>
-                  <option>Option four</option>
-                  <option>Option five</option>
-                  <option>Option six</option>
-                  <option>Option seven</option>
-                  <option>Option eight</option>
-                </select>
-            </div>
-            <div class="form-group">
-              <label>Code</label>
-              <textarea class="form-control" rows="20"></textarea>
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="btn btn-form btn-default">Cancel</button>
-              <button type="submit" class="btn btn-form btn-primary">Save</button>
-            </div>
-          </form>
-          -->
-
+          <h2>No Snippet Selected</h2>
         </div>
 
       </div>
