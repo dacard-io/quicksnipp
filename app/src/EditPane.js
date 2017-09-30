@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import swal from 'sweetalert2'
 import axios from 'axios';
 var CodeMirror = require('react-codemirror'); // React component for CodeMirror IDE
+var config = require('./config'); // Load configs
 
 // Language support is loaded from here (from the codemirror node package directly)
 import '../node_modules/codemirror/mode/javascript/javascript';
@@ -61,8 +62,8 @@ class FileForm extends Component {
       buttonsStyling: false
     }).then(() => {
       // Run delete with axios
-      var api = 'http://localhost:8000/file/' + file.file_id;
-      var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+      var api = config.api.url + '/file/' + file.file_id;
+      var token = localStorage.getItem("token");
       var authOptions = { 'Authorization': 'Token ' + token }
       axios.delete(api, {headers: authOptions}).then(() => {
         swal(
@@ -177,8 +178,8 @@ class EditPane extends Component {
 
   // Fetch all snippets
   fetchSelf(id) {
-    var api = 'http://localhost:8000/snippet/' + id;
-    var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+    var api = config.api.url + '/snippet/' + id;
+    var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
     axios.get(api, {headers: authOptions})
       .then(res => {
@@ -192,8 +193,8 @@ class EditPane extends Component {
   // Save file by give file id, and other data to save
   saveFile(id, title, desc, lang, code) {
     // Perform a patch with axios to update file data
-    var api = 'http://localhost:8000/file/' + id; // Concat id to url to utilize API to patch single file
-    var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+    var api = config.api.url + '/file/' + id; // Concat id to url to utilize API to patch single file
+    var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
 
     axios.patch(api, {
@@ -245,8 +246,8 @@ class EditPane extends Component {
   }
 
   createFile() {
-    var api = 'http://localhost:8000/files/';
-    var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+    var api = config.api.url + '/files/';
+    var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
 
     // Create a file here using axios post and swal!
@@ -277,8 +278,8 @@ class EditPane extends Component {
 
   deleteFile(id) {
     // Run delete with axios
-    var api = 'http://localhost:8000/file/' + id;
-    var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+    var api = config.api.url + '/file/' + id;
+    var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
     axios.delete(api, {headers: authOptions}).then(() => {
         swal(

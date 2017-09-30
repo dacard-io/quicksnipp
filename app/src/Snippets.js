@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import swal from 'sweetalert2'
+var config = require('./config'); // Load configs
 
 // Import child components
 import ViewPane from './ViewPane.js'
@@ -23,8 +24,8 @@ class Snippets extends Component {
 
   // Fetch all snippets
   fetchAllSnippets() {
-    var api = 'http://localhost:8000/snippets/';
-    var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+    var api = config.api.url + '/snippets/';
+    var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
     axios.get(api, {headers: authOptions})
       .then(res => {
@@ -62,8 +63,8 @@ class Snippets extends Component {
       buttonsStyling: false
     }).then(() => {
       // Run delete with axios
-      var api = 'http://localhost:8000/snippet/' + snippet.id;
-      var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+      var api = config.api.url + '/snippet/' + snippet.id;
+      var token = localStorage.getItem("token");
       var authOptions = { 'Authorization': 'Token ' + token }
       axios.delete(api, {headers: authOptions}).then(() => {
         swal(
@@ -148,8 +149,8 @@ class Snippets extends Component {
       // So if state does not contain snippets, set the state to all the snippets found. That way it won't enter a render loop
       // If state has less than 1 snippet, pull all snippets (empty)
       if (this.state.snippets < 1) {
-        var api = 'http://localhost:8000/snippets/';
-        var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+        var api = config.api.url + '/snippets/';
+        var token = localStorage.getItem("token");
         var authOptions = { 'Authorization': 'Token ' + token }
 
         // Run axios request to pull all snippets

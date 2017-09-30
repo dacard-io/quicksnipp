@@ -4,9 +4,18 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios'; // Promise library
 import swal from 'sweetalert2';
+var config = require('./config'); // Load configs
 
 // Import child component
 import Snippets from './Snippets.js'
+
+var logged_in = false;
+
+// Simple login conditional
+if (localStorage.getItem("token") !== null) {
+  //...
+  console.log("Token found: ", localStorage.getItem("token"))
+}
 
 class Groups extends Component {
 	// Lets create the state by initializing the constructor
@@ -42,8 +51,8 @@ class Groups extends Component {
 		  }
 		}).then((result) => {
 		  	// Submit POST to create new group
-		  	var api = 'http://localhost:8000/groups/';
-			var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+		  	var api = config.api.url + '/groups/';
+			var token = localStorage.getItem("token");
 			var authOptions = { 'Authorization': 'Token ' + token }
 			axios.post(api, {
 		    	'title': result[0],
@@ -70,8 +79,8 @@ class Groups extends Component {
 	// I typically put my functions before state management
 	// This function should only run on mount!
 	fetchGroups() {
-		var api = 'http://localhost:8000/groups/';
-		var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+		var api = config.api.url + '/groups/';
+		var token = localStorage.getItem("token");
 		var authOptions = { 'Authorization': 'Token ' + token }
 		axios.get(api, {headers: authOptions})
 			.then(res => {
@@ -83,8 +92,8 @@ class Groups extends Component {
 	}
 
 	fetchSingleGroup(group) {
-		var api = 'http://localhost:8000/group/' + group.id;
-		var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+		var api = config.api.url + '/group/' + group.id;
+		var token = localStorage.getItem("token");
 		var authOptions = { 'Authorization': 'Token ' + token }
 		axios.get(api, {headers: authOptions})
 			.then(res => {
@@ -147,8 +156,8 @@ class Groups extends Component {
 		  }
 		}).then((result) => {
 		  	// Submit POST to create new group
-		  	var api = 'http://localhost:8000/snippets/';
-			var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+		  	var api = config.api.url + '/snippets/';
+			var token = localStorage.getItem("token");
 			var authOptions = { 'Authorization': 'Token ' + token }
 			axios.post(api, {
 		    	'title': result[0],
@@ -213,8 +222,8 @@ class Groups extends Component {
 		  buttonsStyling: false
 		}).then(() => {
 			// Run delete with axios
-			var api = 'http://localhost:8000/group/' + group.id;
-			var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+			var api = config.api.url + '/group/' + group.id;
+			var token = localStorage.getItem("token");
 			var authOptions = { 'Authorization': 'Token ' + token }
 			axios.delete(api, {headers: authOptions}).then(() => {
 			    swal(

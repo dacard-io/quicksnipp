@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 //import swal from 'sweetalert2'
 import axios from 'axios';
 import Prism from 'prismjs' // Syntax highlighting lib
+var config = require('./config'); // Load configs
 
 class ViewPane extends Component {
   // Lets create the state by initializing the constructor
@@ -18,8 +19,8 @@ class ViewPane extends Component {
 
   // Fetch self data
   fetchSelf(id) {
-    var api = 'http://localhost:8000/snippet/' + id;
-    var token = '81aaaac4ad188dab4aa27038abc21ea03268d08b';
+    var api = config.api.url + '/snippet/' + id;
+    var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
     axios.get(api, {headers: authOptions})
       .then(res => {
