@@ -13,10 +13,7 @@ var logged_in = false;
 
 // Simple login conditional. If token found in localStorage, logged in. This will restrict all AJAX requests.
 if (localStorage.getItem("token") !== null) {
-	console.log("Token found for group")
   logged_in = true;
-} else {
-	console.log("Token not found for group")
 }
 
 
@@ -298,7 +295,7 @@ class Groups extends Component {
 		allSnippetsBtn.addEventListener('mousedown', () => this.handleViewAll());
 
 		// Render logout btn
-    	ReactDOM.render(<button id="logout-btn" className="btn btn-default pull-left" onClick={this.handleLogout.bind()}><span className="icon icon-logout"></span>&nbsp;&nbsp;Logout</button>, document.getElementById('toolbar-controls'));
+    	ReactDOM.render(<button id="logout-btn" className="btn btn-default pull-left" onClick={this.handleLogout.bind()}><span className="icon icon-logout"></span>&nbsp;&nbsp;Logout</button>, document.getElementById('toolbar-account-actions'));
 
 		this.fetchGroups(); // Fetch current users groups on initial component mount
 		ReactDOM.render(<Snippets />, document.getElementById('snippet-list'));

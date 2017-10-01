@@ -70,6 +70,13 @@
     .swal2-modal .swal2-buttonswrapper button:first-child {
       margin-right: 2rem;
     }
+    .swal2-container .swal2-modal {
+      box-shadow: 0 0 30px rgba(0,0,0,.1);
+      border: 1px solid #bebebe;
+    }
+    .swal2-modal .swal2-input {
+      margin: 10px auto;
+    }
     </style>
   </head>
   <body>
@@ -121,13 +128,13 @@
           <button id="show-info" class="btn btn-default pull-left">
             <span class="icon icon-info"></span>
           </button>
+          <div id="toolbar-account-actions">
+            <!-- Append UI controls for accounts here -->
+          </div>
           <small>&nbsp;&nbsp;QuickSnipp 1.0.0</small>
 
           <!-- Where react will append controls for the view -->
           <div id="toolbar-controls">
-            <button class="btn btn-default hidden">
-              Cancel
-            </button>
             <!-- Append UI controls here -->
           </div>
 

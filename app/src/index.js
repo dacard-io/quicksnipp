@@ -58,17 +58,23 @@ function loginPrompt() {
 			  'Successfully logged in',
 			  '',
 			  'success'
-			)
-			// Save authToken to localStorage
-			localStorage.setItem("token", res.data.token)
-			// Render view
-			ReactDOM.render(<Groups />, document.getElementById('code-groups'))
+			).then(() => {
+				// Save authToken to localStorage
+				localStorage.setItem("token", res.data.token)
+				// Refresh page
+				location.reload(); // Reload page!
+			})
+			
+			
 	  	}).catch(function (error) {
-		    swal({allowOutsideClick: false},
-			  'Unauthorized',
-			  'Incorrect username/password',
-			  'error'
-			)
+		    swal({
+		    	allowOutsideClick: false,
+		    	title: 'Unauthorized',
+			  	text: 'Incorrect username or password',
+			  	type: 'error'
+		    }).then(() => {
+				loginPrompt(); // Rerun function
+			})
 	  	});
 	}).catch(() => swal.noop)
 }
