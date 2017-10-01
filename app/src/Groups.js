@@ -13,8 +13,13 @@ var logged_in = false;
 
 // Simple login conditional. If token found in localStorage, logged in. This will restrict all AJAX requests.
 if (localStorage.getItem("token") !== null) {
+	console.log("Token found for group")
   logged_in = true;
+} else {
+	console.log("Token not found for group")
 }
+
+
 
 class Groups extends Component {
 	// Lets create the state by initializing the constructor
@@ -179,7 +184,7 @@ class Groups extends Component {
 				'group_id': result[2]
 		  	}, {headers: authOptions}).then(() => {
 			    swal(
-				  'Snippet Created in ID "' + result[2] + '"',
+				  'Snippet Created',
 				  '',
 				  'success'
 				)
@@ -275,17 +280,25 @@ class Groups extends Component {
 		} // End of auth check
 	}
 
+	// Logout function. I just placed it in the groups component, since I want it to rendered right after logging in
+	handleLogout() {
+		localStorage.removeItem("token"); // Remove auth token
+		location.reload(); // Reload page!
+	}
+
 	// On Component Mount (Runs after render :o)
 	componentDidMount() {	
 		// Add event listener to button in UI
 		var addGroupBtn = document.getElementById('add-group');
 		var addSnippetBtn = document.getElementById('add-snippet');
 		var allSnippetsBtn = document.getElementById('all-snippets');
+
 		addGroupBtn.addEventListener('mousedown', () => this.handleAddGroup()); // I have no idea why the fat arrow function fixed the stack overflow error
 		addSnippetBtn.addEventListener('mousedown', () => this.handleAddSnippet(this.state.current_group)); // Pass in current group to function
 		allSnippetsBtn.addEventListener('mousedown', () => this.handleViewAll());
 
-		console.log("Button found: ", allSnippetsBtn)
+		// Render logout btn
+    	ReactDOM.render(<button id="logout-btn" className="btn btn-default pull-left" onClick={this.handleLogout.bind()}><span className="icon icon-logout"></span>&nbsp;&nbsp;Logout</button>, document.getElementById('toolbar-controls'));
 
 		this.fetchGroups(); // Fetch current users groups on initial component mount
 		ReactDOM.render(<Snippets />, document.getElementById('snippet-list'));
