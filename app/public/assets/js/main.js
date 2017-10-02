@@ -5,6 +5,14 @@ $(document).ready(function(){
 		$(this).siblings().removeClass('active')
 	})
 
+	
+
+	$('#add-group').on('mousedown', function(){
+		console.log("CLass changed for body")
+		// Instantiate color picker
+		jscolor.installByClassName("jscolor");
+	})
+
 	$('#show-info').on('mousedown', function(){
 		// Create a sweetalert
 		swal(

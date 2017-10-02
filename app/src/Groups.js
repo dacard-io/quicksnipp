@@ -39,7 +39,7 @@ class Groups extends Component {
 		  title: 'Add a Group',
 		  html:
 		    '<input id="input-grouptitle" class="swal2-input" placeholder="Name of Group" required>' +
-		    '<input id="input-groupcolor" class="swal2-input" placeholder="Group Color (CSS colors please)">',
+		    '<input id="input-groupcolor" class="jscolor swal2-input" data-jscolor="{padding:20, borderWidth:1}" value="737475" placeholder="Group Color (CSS colors please)">',
 		  preConfirm: function () {
 		    return new Promise(function (resolve) {
 		      resolve([
@@ -60,7 +60,7 @@ class Groups extends Component {
 			var authOptions = { 'Authorization': 'Token ' + token }
 			axios.post(api, {
 		    	'title': result[0],
-				'label_color': result[1],
+				'label_color': String("#" + result[1]), // Append # to make it a valid CSS color
 				'snippets': []
 		  	}, {headers: authOptions}).then(() => {
 			    swal(

@@ -39,7 +39,6 @@ class Snippets extends Component {
     var authOptions = { 'Authorization': 'Token ' + token }
     axios.get(api, {headers: authOptions})
       .then(res => {
-        console.log("Snippets fetched!")
         this.setState({ snippets: res.data });
       }).catch((error) => {
         console.log(error);
@@ -195,7 +194,7 @@ class Snippets extends Component {
           }).catch((error) => {
             console.log(error);
           });
-          
+
         } // End auth check
       }
     }
