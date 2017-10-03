@@ -39,7 +39,7 @@ class Groups extends Component {
 		  title: 'Add a Group',
 		  html:
 		    '<input id="input-grouptitle" class="swal2-input" placeholder="Name of Group" required>' +
-		    '<input id="input-groupcolor" class="jscolor swal2-input" data-jscolor="{padding:20, borderWidth:1}" value="737475" placeholder="Group Color (CSS colors please)">',
+		    '<input type="color" id="input-groupcolor" class="swal2-input" data-jscolor="{padding:20, borderWidth:1}" value="737475" placeholder="Group Color (CSS colors please)">',
 		  preConfirm: function () {
 		    return new Promise(function (resolve) {
 		      resolve([
@@ -60,7 +60,7 @@ class Groups extends Component {
 			var authOptions = { 'Authorization': 'Token ' + token }
 			axios.post(api, {
 		    	'title': result[0],
-				'label_color': String("#" + result[1]), // Append # to make it a valid CSS color
+				'label_color': result[1], // Append # to make it a valid CSS color
 				'snippets': []
 		  	}, {headers: authOptions}).then(() => {
 			    swal(
@@ -132,8 +132,6 @@ class Groups extends Component {
 		this.fetchGroups();
 		this.addGroup();
 		//this.fetchGroups();
-		
-		console.log("AddGroup handler ran")
 	}
 
 	handleAddSnippet(group) {
@@ -216,12 +214,55 @@ class Groups extends Component {
 
 	// Handle click events on groups
 	handleEdit(group) {
-		console.log("Edit group: ", group)
-		swal(
-		  'Group Edited',
-		  '',
-		  'success'
-		);
+		
+		// If logged in, proceed
+		if (logged_in) {
+
+		// SweetAlerts2 does not support forms... Well I'm doing it anyway :D
+		swal({
+		  title: 'Edit group "' + group.title + '"',
+		  html:
+		    '<input id="input-grouptitle" class="swal2-input" placeholder="Name of Group" value="' + group.title + '" required>' +
+		    '<input type="color" id="input-groupcolor" class="swal2-input" data-jscolor="{padding:20, borderWidth:1}" value="' + group.label_color + '" placeholder="Group Color (CSS colors please)">',
+		  preConfirm: function () {
+		    return new Promise(function (resolve) {
+		      resolve([
+		        //$('#swal-input1').val(),
+		        //$('#swal-input2').val()
+		        document.getElementById('input-grouptitle').value,
+		        document.getElementById('input-groupcolor').value
+		      ])
+		    })
+		  },
+		  onOpen: function () {
+		    //$('#swal-input1').focus()
+		  }
+		}).then((result) => {
+		  	// Submit POST to create new group
+		  	var api = config.api.url + '/group/' + group.id;
+			var token = localStorage.getItem("token");
+			var authOptions = { 'Authorization': 'Token ' + token }
+			axios.patch(api, {
+		    	'title': result[0],
+				'label_color': result[1], // Append # to make it a valid CSS color
+		  	}, {headers: authOptions}).then(() => {
+			    swal(
+				  'Group Changed',
+				  '',
+				  'success'
+				)
+				this.fetchGroups(); // This got it working!
+		  	}).catch(function (error) {
+			    console.log(error);
+			    swal(
+				  'Oops...',
+				  'Could not save group. Error: ' + error,
+				  'error'
+				)
+		  	});
+		}).catch(() => swal.noop)
+
+		} // End of auth check
 	}
 	// Handle click events on groups
 	handleDelete(group) {
@@ -323,7 +364,7 @@ class Groups extends Component {
   		//console.log(this.state.groups)
 
   		this.state.groups.map((group, index) => {
-  			groups_arr.push(<span className="nav-group-item" key={index} onClick={this.handleClick.bind(this, group)}><span className="icon icon-record" style={{color: group.label_color}}></span> {group.title} <span className="icon icon-trash" onClick={this.handleDelete.bind(this, group)}></span><span className="icon icon-pencil" onClick={this.handleEdit.bind(this, group)}></span></span>);
+  			groups_arr.push(<span className="nav-group-item" key={index} onClick={this.handleClick.bind(this, group)}><span className="icon icon-record" style={{color: group.label_color}}></span> {group.title} <span className="icon icon-trash" onClick={this.handleDelete.bind(this, group)}></span><span className="icon icon-pencil edit-group" onClick={this.handleEdit.bind(this, group)}></span></span>);
   		});
 
 	    return (<div className="group-react-renderer">{groups_arr}</div>);

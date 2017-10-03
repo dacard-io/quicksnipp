@@ -117,6 +117,88 @@ class Snippets extends Component {
     } // End auth check
   }
 
+  saveSnippetTitle(id, title) {
+    // Submit POST to create new group
+    var api = config.api.url + '/snippet/' + id;
+      var token = localStorage.getItem("token");
+      var authOptions = { 'Authorization': 'Token ' + token }
+      axios.patch(api, {
+          'title': title,
+        }, {headers: authOptions}).then(() => {
+          // Show nothing.
+        }).catch(function (error) {
+          console.log(error);
+          swal(
+          'Oops...',
+          'Could not save group. snippet: ' + error,
+          'error'
+        )
+      });
+  }
+
+  saveSnippetDesc(id, desc) {
+    // Submit POST to create new group
+    var api = config.api.url + '/snippet/' + id;
+      var token = localStorage.getItem("token");
+      var authOptions = { 'Authorization': 'Token ' + token }
+      axios.patch(api, {
+          'description': desc,
+        }, {headers: authOptions}).then(() => {
+          // Show nothing.
+        }).catch(function (error) {
+          console.log(error);
+          swal(
+          'Oops...',
+          'Could not save snippet. Error: ' + error,
+          'error'
+        )
+      });
+  }
+
+  // Handle click events on snippegs
+  handleEditName(snippet) {
+    // Use contentEditable for this!
+    var table_title = document.getElementById('tr-snippet-' + snippet.id).getElementsByClassName('td-title')[0];
+    table_title.contentEditable = true;
+
+    table_title.addEventListener('blur', (e) => {
+      // On blur or clicking on something else, save changes!
+      table_title.contentEditable = false; // Disable content editing
+      this.saveSnippetTitle(snippet.id, table_title.innerText); // Save data!
+    });
+
+    table_title.addEventListener('keypress', (e) => {
+      // If enter key pressed
+      if (e.which === 13) {
+        e.preventDefault(); // Prevent enter from actually doing anything
+        table_title.contentEditable = false; // Disable content editing
+        this.saveSnippetTitle(snippet.id, table_title.innerText); // Save data!
+      }
+    });  
+  }
+
+  // Handle click events on snippegs
+  handleEditDesc(snippet) {
+    // Use contentEditable for this!
+    var table_desc = document.getElementById('tr-snippet-' + snippet.id).getElementsByClassName('td-desc')[0];
+    table_desc.contentEditable = true;
+
+    table_desc.addEventListener('blur', (e) => {
+      // On blur or clicking on something else, save changes!
+      table_desc.contentEditable = false; // Disable content editing
+      this.saveSnippetDesc(snippet.id, table_desc.innerText); // Save data!
+    });
+
+    table_desc.addEventListener('keypress', (e) => {
+      // If enter key pressed
+      if (e.which === 13) {
+        e.preventDefault(); // Prevent enter from actually doing anything
+        table_desc.contentEditable = false; // Disable content editing
+        this.saveSnippetDesc(snippet.id, table_desc.innerText); // Save data!
+      }
+    });
+  }
+
   // On initial component render/mount
   componentDidMount() { 
     //this.setState({currentgroup: this.props.currentGroup})
@@ -152,8 +234,8 @@ class Snippets extends Component {
       stateSnippets.map((snippet, index) => {
           snippets_arr.push(
             <tr key={index} id={"tr-snippet-" + snippet.id}>
-              <td onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
-              <td onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
+              <td className="td-title" onDoubleClick={this.handleEditName.bind(this, snippet)} onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
+              <td className="td-desc" onDoubleClick={this.handleEditDesc.bind(this, snippet)} onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
               <td>
                   <button className="btn btn-mini btn-default" onClick={this.handleEdit.bind(this, snippet)}><span className="icon icon-pencil"></span> Edit</button>&nbsp;&nbsp;
                   <button className="btn btn-mini btn-negative" onClick={this.handleDelete.bind(this, snippet)}><span className="icon icon-trash"></span></button>
@@ -176,10 +258,22 @@ class Snippets extends Component {
         axios.get(api, {headers: authOptions})
           .then(res => {
             res.data.map((snippet, index) => {
+              /* Old code
               snippets_arr.push(
                 <tr key={index} id={"tr-snippet-" + snippet.id}>
                   <td onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
                   <td onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
+                  <td>
+                      <button className="btn btn-mini btn-default" onClick={this.handleEdit.bind(this, snippet)}><span className="icon icon-pencil"></span> Edit</button>&nbsp;&nbsp;
+                      <button className="btn btn-mini btn-negative" onClick={this.handleDelete.bind(this, snippet)}><span className="icon icon-trash"></span></button>
+                  </td>
+                </tr>
+              );
+              */
+              snippets_arr.push(
+                <tr key={index} id={"tr-snippet-" + snippet.id}>
+                  <td className="td-title" onDoubleClick={this.handleEditName.bind(this, snippet)} onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
+                  <td className="td-desc" onDoubleClick={this.handleEditDesc.bind(this, snippet)} onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
                   <td>
                       <button className="btn btn-mini btn-default" onClick={this.handleEdit.bind(this, snippet)}><span className="icon icon-pencil"></span> Edit</button>&nbsp;&nbsp;
                       <button className="btn btn-mini btn-negative" onClick={this.handleDelete.bind(this, snippet)}><span className="icon icon-trash"></span></button>

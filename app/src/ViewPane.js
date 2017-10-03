@@ -34,8 +34,6 @@ class ViewPane extends Component {
     var authOptions = { 'Authorization': 'Token ' + token }
     axios.get(api, {headers: authOptions})
       .then(res => {
-        console.log(res)
-        console.log("Snippets fetched!")
         this.setState({ current_snippet: res.data });
         this.setState({ loaded: true });
       }).catch((error) => {

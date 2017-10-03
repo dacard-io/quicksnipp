@@ -8,6 +8,38 @@ var config = require('./config'); // Load configs
 // Language support is loaded from here (from the codemirror node package directly)
 import '../node_modules/codemirror/mode/javascript/javascript';
 import '../node_modules/codemirror/mode/php/php';
+import '../node_modules/codemirror/mode/cobol/cobol';
+import '../node_modules/codemirror/mode/coffeescript/coffeescript';
+import '../node_modules/codemirror/mode/clojure/clojure';
+import '../node_modules/codemirror/mode/css/css';
+import '../node_modules/codemirror/mode/dart/dart';
+import '../node_modules/codemirror/mode/python/python';
+import '../node_modules/codemirror/mode/django/django';
+import '../node_modules/codemirror/mode/dockerfile/dockerfile';
+import '../node_modules/codemirror/mode/fortran/fortran';
+import '../node_modules/codemirror/mode/erlang/erlang';
+import '../node_modules/codemirror/mode/jsx/jsx';
+import '../node_modules/codemirror/mode/lua/lua';
+import '../node_modules/codemirror/mode/markdown/markdown';
+import '../node_modules/codemirror/mode/octave/octave';
+import '../node_modules/codemirror/mode/perl/perl';
+import '../node_modules/codemirror/mode/powershell/powershell';
+import '../node_modules/codemirror/mode/go/go';
+import '../node_modules/codemirror/mode/groovy/groovy';
+import '../node_modules/codemirror/mode/nginx/nginx';
+import '../node_modules/codemirror/mode/ruby/ruby';
+import '../node_modules/codemirror/mode/rust/rust';
+import '../node_modules/codemirror/mode/sass/sass';
+import '../node_modules/codemirror/mode/shell/shell';
+import '../node_modules/codemirror/mode/smarty/smarty';
+import '../node_modules/codemirror/mode/sql/sql';
+import '../node_modules/codemirror/mode/swift/swift';
+import '../node_modules/codemirror/mode/twig/twig';
+import '../node_modules/codemirror/mode/vb/vb';
+import '../node_modules/codemirror/mode/vbscript/vbscript';
+import '../node_modules/codemirror/mode/vue/vue';
+import '../node_modules/codemirror/mode/xml/xml';
+import '../node_modules/codemirror/mode/yaml/yaml';
 
 var logged_in = false;
 
@@ -228,7 +260,6 @@ class FileForm extends Component {
               <option value="pascal">Pascal</option>
               <option value="perl">Perl</option>
               <option value="php">PHP</option>
-              <option value="php-extras">PHP Extras</option>
               <option value="powershell">PowerShell</option>
               <option value="processing">Processing</option>
               <option value="prolog">Prolog</option>
