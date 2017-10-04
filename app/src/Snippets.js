@@ -128,7 +128,10 @@ class Snippets extends Component {
         // Set title of snippet-pane
         // This is such a fake way of doing it. Just replacing the DOM element. Not great. But it seems efficient
         if (this.state.current_snippet && this.state.current_view === 'view' || this.state.current_snippet && this.state.current_view === 'edit') {
-          document.getElementById('snippet-name').innerText = title; // I'll find another way later
+          // If snippet-name element exists
+          if (document.getElementById('snippet-name')) {
+            document.getElementById('snippet-name').innerText = title; // I'll find another way later
+          }
         }
       }).catch(function (error) {
         console.log(error);
@@ -151,7 +154,10 @@ class Snippets extends Component {
           // Set title of snippet-pane
           // This is such a fake way of doing it. Just replacing the DOM element. Not great. But it seems efficient
           if (this.state.current_snippet && this.state.current_view === 'view' || this.state.current_snippet && this.state.current_view === 'edit') {
-            document.getElementById('snippet-desc').innerText = desc; // I'll find another way later
+            // If snippet-desc element exists
+            if (document.getElementById('snippet-desc')) {
+              document.getElementById('snippet-desc').innerText = desc; // I'll find another way later
+            }
           }
         }).catch(function (error) {
           console.log(error);
