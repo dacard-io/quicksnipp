@@ -77,6 +77,23 @@
     .swal2-modal .swal2-input {
       margin: 10px auto;
     }
+    #code-pane-expander {
+      position: relative;
+      height: 100%;
+      width: 3px;
+      left: 0;
+      background: #f5f5f4;
+      border-left: 1px solid #dddddd;
+      cursor: col-resize;
+    }
+    .quick-edit {
+      float: right;
+      z-index: 99;
+      background: #dddddd;
+      padding: 0px 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     </style>
   </head>
   <body>
@@ -117,6 +134,7 @@
         </div>
 
         <!-- Snippet View -->
+        <!--<div id="code-pane-expander"></div>--><!-- Create dragging functionality later -->
         <div id="code-pane" class="pane">
           <h2>No Snippet Selected</h2>
         </div>
@@ -155,7 +173,6 @@
     <script src="%PUBLIC_URL%/assets/js/vendor/plugins.js"></script>
     <script src="%PUBLIC_URL%/assets/js/vendor/prism.js"></script>
     <script src="%PUBLIC_URL%/assets/js/vendor/sweetalert2.min.js"></script>
-    <script src="%PUBLIC_URL%/assets/js/vendor/jquery.waypoints.min.js"></script>
     <script src="%PUBLIC_URL%/assets/js/vendor/jscolor.min.js"></script>
     
     <!-- Your JS Files -->

@@ -26,5 +26,5 @@ $(window).on('load', function(){
 		});
 
 		$(this).addClass('active');
-	})
+	});
 });

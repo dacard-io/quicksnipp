@@ -19,8 +19,7 @@ class ViewPane extends Component {
     
     // Create the state
     this.state = {
-      current_snippet: '',
-      loaded: false
+      current_snippet: ''
     };
   }
 
@@ -35,7 +34,6 @@ class ViewPane extends Component {
     axios.get(api, {headers: authOptions})
       .then(res => {
         this.setState({ current_snippet: res.data });
-        this.setState({ loaded: true });
       }).catch((error) => {
         console.log(error);
       });
@@ -47,6 +45,14 @@ class ViewPane extends Component {
   componentDidMount() {
     // Remove any toolbar controls and buttons
     ReactDOM.unmountComponentAtNode(document.getElementById('toolbar-controls'));
+    // Only when component is mounted, then fetch
+    this.fetchSelf(this.props.currentSnippet);
+  }
+
+  componentWillUnmount() {
+    //this.fetchSelf().abort();
+    //this.loadInterval && clearInterval(this.loadInterval);
+    //this.loadInterval = false;
   }
 
   componentDidUpdate() {
@@ -63,7 +69,7 @@ class ViewPane extends Component {
 
     // If state for current snippet not set, retrieve the snippet
     if ( !this.state.current_snippet ) {
-      this.fetchSelf(this.props.currentSnippet);
+      //this.fetchSelf(this.props.currentSnippet);
     }
 
     // If current_snippet state set, map files
@@ -88,8 +94,8 @@ class ViewPane extends Component {
       // If files_arr empty, show no files
       return (
         <div className="snippet-view-react-renderer">
-          <h2>{this.state.current_snippet.title}</h2>
-          <p>{this.state.current_snippet.description}</p>
+          <h2 id="snippet-name">{this.state.current_snippet.title}</h2>
+          <p id="snippet-desc">{this.state.current_snippet.description}</p>
           <hr/>
           <p><b>No files found</b></p>
         </div>
@@ -97,8 +103,8 @@ class ViewPane extends Component {
     } else {
       return (
         <div className="snippet-view-react-renderer">
-          <h2>{this.state.current_snippet.title}</h2>
-          <p>{this.state.current_snippet.description}</p>
+          <h2 id="snippet-name">{this.state.current_snippet.title}</h2>
+          <p id="snippet-desc">{this.state.current_snippet.description}</p>
           <hr/>
           {files_arr}
         </div>

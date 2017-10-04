@@ -520,8 +520,8 @@ class EditPane extends Component {
     } else {
       return (
         <div className="snippet-edit-react-renderer">
-          <h2>{this.state.current_snippet.title}</h2>
-          <p>{this.state.current_snippet.description}</p>
+          <h2 id="snippet-name">{this.state.current_snippet.title}</h2>
+          <p id="snippet-desc">{this.state.current_snippet.description}</p>
           <hr/>
           <div id="files-container">
             {files_arr}

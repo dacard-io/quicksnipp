@@ -120,20 +120,24 @@ class Snippets extends Component {
   saveSnippetTitle(id, title) {
     // Submit POST to create new group
     var api = config.api.url + '/snippet/' + id;
-      var token = localStorage.getItem("token");
-      var authOptions = { 'Authorization': 'Token ' + token }
-      axios.patch(api, {
-          'title': title,
-        }, {headers: authOptions}).then(() => {
-          // Show nothing.
-        }).catch(function (error) {
-          console.log(error);
-          swal(
-          'Oops...',
-          'Could not save group. snippet: ' + error,
-          'error'
-        )
-      });
+    var token = localStorage.getItem("token");
+    var authOptions = { 'Authorization': 'Token ' + token }
+    axios.patch(api, {
+        'title': title,
+      }, {headers: authOptions}).then(() => {
+        // Set title of snippet-pane
+        // This is such a fake way of doing it. Just replacing the DOM element. Not great. But it seems efficient
+        if (this.state.current_snippet && this.state.current_view === 'view' || this.state.current_snippet && this.state.current_view === 'edit') {
+          document.getElementById('snippet-name').innerText = title; // I'll find another way later
+        }
+      }).catch(function (error) {
+        console.log(error);
+        swal(
+        'Oops...',
+        'Could not save group. snippet: ' + error,
+        'error'
+      )
+    });
   }
 
   saveSnippetDesc(id, desc) {
@@ -144,7 +148,11 @@ class Snippets extends Component {
       axios.patch(api, {
           'description': desc,
         }, {headers: authOptions}).then(() => {
-          // Show nothing.
+          // Set title of snippet-pane
+          // This is such a fake way of doing it. Just replacing the DOM element. Not great. But it seems efficient
+          if (this.state.current_snippet && this.state.current_view === 'view' || this.state.current_snippet && this.state.current_view === 'edit') {
+            document.getElementById('snippet-desc').innerText = desc; // I'll find another way later
+          }
         }).catch(function (error) {
           console.log(error);
           swal(
@@ -160,6 +168,7 @@ class Snippets extends Component {
     // Use contentEditable for this!
     var table_title = document.getElementById('tr-snippet-' + snippet.id).getElementsByClassName('td-title')[0];
     table_title.contentEditable = true;
+    table_title.focus(); // Focus on input field
 
     table_title.addEventListener('blur', (e) => {
       // On blur or clicking on something else, save changes!
@@ -182,6 +191,7 @@ class Snippets extends Component {
     // Use contentEditable for this!
     var table_desc = document.getElementById('tr-snippet-' + snippet.id).getElementsByClassName('td-desc')[0];
     table_desc.contentEditable = true;
+    table_desc.focus(); // Focus on input field
 
     table_desc.addEventListener('blur', (e) => {
       // On blur or clicking on something else, save changes!
@@ -234,8 +244,14 @@ class Snippets extends Component {
       stateSnippets.map((snippet, index) => {
           snippets_arr.push(
             <tr key={index} id={"tr-snippet-" + snippet.id}>
-              <td className="td-title" onDoubleClick={this.handleEditName.bind(this, snippet)} onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
-              <td className="td-desc" onDoubleClick={this.handleEditDesc.bind(this, snippet)} onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
+              <td onClick={this.handleClick.bind(this, snippet)}>
+                <span onClick={this.handleEditName.bind(this, snippet)} className="icon icon-pencil quick-edit"></span>
+                <div className="td-title">{snippet.title}</div>
+              </td>
+              <td onClick={this.handleClick.bind(this, snippet)}>
+                <span onClick={this.handleEditDesc.bind(this, snippet)} className="icon icon-pencil quick-edit"></span>
+                <div className="td-desc">{snippet.description}</div>
+              </td>
               <td>
                   <button className="btn btn-mini btn-default" onClick={this.handleEdit.bind(this, snippet)}><span className="icon icon-pencil"></span> Edit</button>&nbsp;&nbsp;
                   <button className="btn btn-mini btn-negative" onClick={this.handleDelete.bind(this, snippet)}><span className="icon icon-trash"></span></button>
@@ -272,8 +288,14 @@ class Snippets extends Component {
               */
               snippets_arr.push(
                 <tr key={index} id={"tr-snippet-" + snippet.id}>
-                  <td className="td-title" onDoubleClick={this.handleEditName.bind(this, snippet)} onClick={this.handleClick.bind(this, snippet)}>{snippet.title}</td>
-                  <td className="td-desc" onDoubleClick={this.handleEditDesc.bind(this, snippet)} onClick={this.handleClick.bind(this, snippet)}>{snippet.description}</td>
+                  <td onClick={this.handleClick.bind(this, snippet)}>
+                    <span onClick={this.handleEditName.bind(this, snippet)} className="icon icon-pencil quick-edit"></span>
+                    <div className="td-title">{snippet.title}</div>
+                  </td>
+                  <td onClick={this.handleClick.bind(this, snippet)}>
+                    <span onClick={this.handleEditDesc.bind(this, snippet)} className="icon icon-pencil quick-edit"></span>
+                    <div className="td-desc">{snippet.description}</div>
+                  </td>
                   <td>
                       <button className="btn btn-mini btn-default" onClick={this.handleEdit.bind(this, snippet)}><span className="icon icon-pencil"></span> Edit</button>&nbsp;&nbsp;
                       <button className="btn btn-mini btn-negative" onClick={this.handleDelete.bind(this, snippet)}><span className="icon icon-trash"></span></button>
