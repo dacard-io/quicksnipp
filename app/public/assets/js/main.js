@@ -9,7 +9,14 @@ $(document).ready(function(){
 		  Portfolio: <a href="//dacard.io" target="_blank">Dacard.io</a>\
 		  '
 		);
-	})
+	});
+
+	// On each nav-group-item click, recreate event listeners
+	$('#snippet-list td').on('mouseenter', function(){
+		$(this).find('.quick-edit').addClass('show');
+	}).on('mouseleave', function(){
+		$(this).find('.quick-edit').removeClass('show');
+	});
 })
 
 $(window).on('load', function(){

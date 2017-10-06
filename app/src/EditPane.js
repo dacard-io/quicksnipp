@@ -373,7 +373,6 @@ class EditPane extends Component {
         'language': lang,
         'code': code
       }, {headers: authOptions}).then((res) => {
-        console.log("Response for save: ", res)
         swal(
           'File Saved',
           '',
@@ -407,15 +406,8 @@ class EditPane extends Component {
       var file_lang = document.getElementById('file-lang-' + this.state.current_snippet.files[i].id).value;
       var file_code = this.current_files[i].getCodeMirror().getValue(); // Get the object values directly, from the contextual variable
       
-      console.log("To be saved: ", file_name, " ,", file_desc, " ,", file_code)
       this.saveFile(this.state.current_snippet.files[i].id, file_name, file_desc, file_lang, file_code) // Just save the first snippet for testing
-     
-      // Just get the refs working first
-      //console.log('Global Context: ', this); // So fucking close.
-      //console.log('Context: ', this.current_files[i].getCodeMirror().getValue()); // So fucking close.
-      
     }
-    // Update snippet info (snippet title, and description)
 
     this.forceUpdate(); // Rerender
   }
