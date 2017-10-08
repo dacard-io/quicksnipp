@@ -176,7 +176,7 @@ class FileForm extends Component {
           </div>
           <div className="form-group">
             <select className="form-control" id={"file-lang-" + this.props.fileid} value={this.state.file_lang} onChange={this.langChange}>
-              <option value="" disabled>Choose file language</option>
+              <option value="none" disabled>Choose file language</option>
               <option value="abap">ABAP</option>
               <option value="actionscript">ActionScript</option>
               <option value="ada">Ada</option>
@@ -391,7 +391,6 @@ class EditPane extends Component {
   }
 
   // Save snippet by id, and other data to save
-
   // Save all data in snippet (pass in snippet object from prop)
   saveData(snippet) {
     // For all files that exist, save each of them
@@ -408,8 +407,6 @@ class EditPane extends Component {
       
       this.saveFile(this.state.current_snippet.files[i].id, file_name, file_desc, file_lang, file_code) // Just save the first snippet for testing
     }
-
-    this.forceUpdate(); // Rerender
   }
 
   createFile() {
@@ -426,7 +423,7 @@ class EditPane extends Component {
       'description': '',
       'language': 'none', // This field is required, so set to none
       'snippet_id': this.state.current_snippet.id, // Just set the snippet ID, leave the fields empty to be set by the user
-      'code': ''
+      'code': '// Enter your code here'
       }, {headers: authOptions}).then(() => {
         swal(
           'File Created',
@@ -443,7 +440,7 @@ class EditPane extends Component {
       )
     });
 
-    this.render(); // Rerender
+    this.fetchSelf(this.state.current_snippet.id) // FetchSelf to retrieve any new files and add to state
 
     } // End of auth check
   }
