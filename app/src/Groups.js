@@ -161,7 +161,6 @@ class Groups extends Component {
 		  onOpen: () => {
 		    // Append groups to the snippet group selector
 		    for (var i = 0; i < this.state.groups.length; i++) {
-		    	console.log(this.state.groups[i]);
 		    	var option = document.createElement("option");
 		    	document.getElementById('input-snippet-group').appendChild(option);
 		    	option.value = this.state.groups[i].id;

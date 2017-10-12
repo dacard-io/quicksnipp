@@ -1,18 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import Groups from './Groups';
 import swal from 'sweetalert2';
 import axios from 'axios'; // Promise library
 
 var config = require('./config'); // Load configs
-
-// Save data to the current local store
-//localStorage.setItem("token", "81aaaac4ad188dab4aa27038abc21ea03268d08b");
-// Access some stored data
-//alert( "token = " + localStorage.getItem("token"));
-
-//localStorage.removeItem("token");
 
 // Before rendering UI, check if user token exists, if not ask for credentials
 var logged_in = false;
@@ -56,11 +48,12 @@ function loginPrompt() {
 	    	'username': result[0],
 			'password': result[1],
 	  	}).then((res) => {
-		    swal(
-			  'Successfully logged in',
-			  '',
-			  'success'
-			).then(() => {
+		    swal({
+    			allowOutsideClick: false,
+			  	title: 'Successfully logged in',
+			  	text: '',
+			  	type: 'success'
+			}).then(() => {
 				// Save authToken to localStorage
 				localStorage.setItem("token", res.data.token)
 				// Refresh page

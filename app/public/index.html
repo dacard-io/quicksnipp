@@ -22,6 +22,9 @@
 
     <!-- Please compile in Stylesheet later! -->
     <style>
+    * {
+      -webkit-user-select: auto; /* This causes bugs for SweetAlerts on other browsers */
+    }
     .hidden {
       display: none;
     }
@@ -94,10 +97,7 @@
       border-radius: 5px;
       cursor: pointer;
       opacity: 0;
-      transition: all 0.3s linear;
-    }
-    .show {
-      opacity: 1;
+      transition: all 0.2s linear;
     }
     .td-title {
       overflow: auto;
@@ -105,7 +105,30 @@
     .td-desc {
       white-space: normal;
     }
-
+    td:hover .quick-edit {
+      opacity: 1;
+    }
+    .nav-group-item .icon-trash {
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.2s linear;
+    }
+    .nav-group-item .edit-group {
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.2s linear;
+    }
+    .nav-group-item:hover .icon-trash, .nav-group-item:hover .edit-group {
+      opacity: 1;
+    }
+    tr .btn {
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.2s linear;
+    }
+    tr:hover .btn {
+      opacity: 1;
+    }
     </style>
   </head>
   <body>
@@ -176,11 +199,34 @@
     </div>
 
     <!-- JS Dependencies below -->
-    <!--
-    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-    <script>window.jQuery || document.write('<script src="%PUBLIC_URL%/assets/js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
-    -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script>
+      function browserSupportsAllFeatures() {
+        return window.Promise && window.fetch && window.Symbol;
+      }
+
+      function loadScript(src) {
+        var js = document.createElement('script');
+        js.src = src;
+
+        js.onload = function() {
+          console.log("core-js polyfill loaded successfully")
+        };
+
+        js.onerror = function() {
+          done(new Error('Failed to load polyfill ' + src));
+        };
+
+        document.head.appendChild(js);
+      }
+
+      if (!browserSupportsAllFeatures()) {
+        console.log("Browser doesn't support all features. Loading core-js polyfill")
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js');
+      }
+    </script>
+    <!-- Core is a polyfill for Promises (To support IE and SweetAlerts) -->
 
     <script src="%PUBLIC_URL%/assets/js/vendor/plugins.js"></script>
     <script src="%PUBLIC_URL%/assets/js/vendor/prism.js"></script>

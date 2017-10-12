@@ -145,7 +145,8 @@ class FileForm extends Component {
       file_name: this.props.filename,
       file_desc: this.props.filedesc,
       file_lang: this.props.filelang,
-      file_code: this.props.filecode
+      file_code: this.props.filecode,
+      file_exists: true
     });
 
     //console.log(this.state.file_code)
@@ -350,6 +351,7 @@ class EditPane extends Component {
       .then(res => {
         this.setState({ current_snippet: res.data });
         this.setState({ loaded: true });
+        //console.log("State files now has (", this.state.current_snippet.files.length, ") files. >> ", this.state.current_snippet)
       }).catch((error) => {
         console.log(error);
       });
@@ -393,6 +395,9 @@ class EditPane extends Component {
   // Save snippet by id, and other data to save
   // Save all data in snippet (pass in snippet object from prop)
   saveData(snippet) {
+    // If logged in, proceed
+    if (logged_in) {
+
     // For all files that exist, save each of them
 
     // Get data from UI, save files first
@@ -407,6 +412,10 @@ class EditPane extends Component {
       
       this.saveFile(this.state.current_snippet.files[i].id, file_name, file_desc, file_lang, file_code) // Just save the first snippet for testing
     }
+
+    this.fetchSelf(this.state.current_snippet.id) // FetchSelf to retrieve any new files and add to state
+
+    } // End of auth check
   }
 
   createFile() {
@@ -416,6 +425,13 @@ class EditPane extends Component {
     var api = config.api.url + '/files/';
     var token = localStorage.getItem("token");
     var authOptions = { 'Authorization': 'Token ' + token }
+
+    if ( this.state.current_snippet ) {
+      // Only save data in real-time when there is more than 1 file showing
+      if (this.state.current_snippet.length > 0) {
+        this.saveData(this.state.current_snippet.id); // Save existing data
+      }
+    }
 
     // Create a file here using axios post and swal!
     axios.post(api, {
@@ -430,6 +446,7 @@ class EditPane extends Component {
           '',
           'success'
         )
+        //console.log("Promise running?")
         this.fetchSelf(this.state.current_snippet.id) // Refetch self to display new file in real-time
       }).catch(function (error) {
         console.log(error);
@@ -440,7 +457,7 @@ class EditPane extends Component {
       )
     });
 
-    this.fetchSelf(this.state.current_snippet.id) // FetchSelf to retrieve any new files and add to state
+    //this.fetchSelf(this.state.current_snippet.id) // Refetch self to display new file in real-time
 
     } // End of auth check
   }
@@ -468,20 +485,46 @@ class EditPane extends Component {
       )
     });
 
+    this.fetchSelf(this.state.current_snippet.id) // FetchSelf to retrieve any new files and add to state (or delete)
+
     } // End of auth check
+  }
+
+  componentWillReceiveProps() {
+    // Fetch self when component recieves props
+    this.fetchSelf(this.props.currentSnippet);
   }
 
   // After render
   componentDidMount() {
     // Create save and cancel buttons and attach event listeners to it
     ReactDOM.unmountComponentAtNode(document.getElementById('toolbar-controls'));
-    // Create save snippet button with onclick event
-    ReactDOM.render(<button id="save-snippet" className="btn btn-primary pull-right" onClick={this.saveData.bind(this, this.props.currentSnippet)}>Save</button>, document.getElementById('toolbar-controls'));
+    
+    // If state set, perform conditions
+    if ( this.state.current_snippet ) {
+      // If there is more than one file in the state, go ahead and allow saving
+      if (this.state.current_snippet.files.length > 0) {
+        // Create save snippet button with onclick event
+        ReactDOM.render(<button id="save-snippet" className="btn btn-primary pull-right" onClick={this.saveData.bind(this, this.props.currentSnippet)}>Save</button>, document.getElementById('toolbar-controls'));
+      }
+    }
   }
 
   // On state change
   componentDidUpdate() {
     //console.log(this.state)
+    
+    // Create save and cancel buttons and attach event listeners to it
+    ReactDOM.unmountComponentAtNode(document.getElementById('toolbar-controls'));
+
+    // If state set, perform conditions
+    if ( this.state.current_snippet ) {
+      // If there is more than one file in the state, go ahead and allow saving
+      if (this.state.current_snippet.files.length > 0) {
+        // Create save snippet button with onclick event
+        ReactDOM.render(<button id="save-snippet" className="btn btn-primary pull-right" onClick={this.saveData.bind(this, this.props.currentSnippet)}>Save</button>, document.getElementById('toolbar-controls'));
+      }
+    }
   }
 
   render() {
