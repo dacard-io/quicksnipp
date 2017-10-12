@@ -2,10 +2,10 @@ $(document).ready(function(){
 	$('#show-info').on('mousedown', function(){
 		// Create a sweetalert
 		swal(
-		  'Quicksnipp v1',
-		  'A simple code snippet storage service that utilizes a Node/React.js front-end, and a Python/Django Rest Framework backend.\
+		  'Quicksnipp',
+		  'A simple code snippet storage service. Built with a Node/React.js front-end, and a Python/Django Rest Framework backend.\
 		  <br/><br/>\
-		  Source code: <a href="#">Github</a><br/>\
+		  Source code: <a href="//github.com/dacard-io/quicksnipp">Github</a><br/>\
 		  Portfolio: <a href="//dacard.io" target="_blank">Dacard.io</a>\
 		  '
 		);
