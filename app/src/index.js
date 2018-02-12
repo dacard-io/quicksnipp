@@ -31,6 +31,8 @@ function loginPrompt() {
 	  html:
 	  	'<p>Get access to your private code snippets by entering your login credentials. If you do not have an account, \
 	  	<a id="register-account" href="#">click here to register</a>.</p>' +
+	  	'<br/><p>If you would like to try out QuickSnipp without registering, use the demo account credentials given below.</p>' +
+	  	'<p><span style="color: #3484d6;font-weight: 800;">Demo Account</span>: <b>demo</b> — <b>demo_login0000</b></p>' +
 	    '<input id="input-username" class="swal2-input" placeholder="Username" required>' +
 	    '<input type="password" id="input-password" class="swal2-input" placeholder="Password" required>',
 	  preConfirm: function () {
